@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -14,6 +15,9 @@ public class GameRunner : Game
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
+
+        Window.AllowUserResizing = true;
+        Window.ClientSizeChanged += OnResize;
     }
 
     protected override void Initialize()
@@ -50,5 +54,17 @@ public class GameRunner : Game
         // TODO: Add your drawing code here
 
         base.Draw(gameTime);
+    }
+
+    private void OnResize(object sender, EventArgs e)
+    {
+        var gameWindow = (GameWindow)sender;
+
+        if (gameWindow == null)
+            return;
+
+        _graphics.PreferredBackBufferWidth = gameWindow.ClientBounds.Width;
+        _graphics.PreferredBackBufferHeight = gameWindow.ClientBounds.Height;
+        _graphics.ApplyChanges();
     }
 }
