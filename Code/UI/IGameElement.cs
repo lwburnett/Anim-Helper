@@ -1,10 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Anim_Helper.UI
+namespace Anim_Helper.UI;
+
+internal interface IGameElement
 {
-    internal interface IGameElement
-    {
-        void Update(GameTime iGameTime);
-        void Draw();
-    }
+    void Update(GameTime iGameTime);
+    void Draw();
 }

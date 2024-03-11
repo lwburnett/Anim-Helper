@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using Anim_Helper.UI;
+using Anim_Helper.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -10,6 +13,8 @@ public class GameRunner : Game
     private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
+    private readonly List<IGameElement> _gameElements;
+
     public GameRunner()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -18,6 +23,8 @@ public class GameRunner : Game
 
         Window.AllowUserResizing = true;
         Window.ClientSizeChanged += OnResize;
+
+        _gameElements = new List<IGameElement>();
     }
 
     protected override void Initialize()
@@ -26,6 +33,10 @@ public class GameRunner : Game
         _graphics.PreferredBackBufferWidth = 1000;
         _graphics.PreferredBackBufferHeight = 720;
         _graphics.ApplyChanges();
+
+        GraphicsHelper.RegisterContentManager(Content);
+        GraphicsHelper.RegisterGraphicsDevice(GraphicsDevice);
+        GraphicsHelper.RegisterSpriteBatch(_spriteBatch);
 
         base.Initialize();
     }
@@ -42,7 +53,10 @@ public class GameRunner : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        // TODO: Add your update logic here
+        foreach (var gameElement in _gameElements)
+        {
+            gameElement.Update(gameTime);
+        }
 
         base.Update(gameTime);
     }
@@ -51,7 +65,10 @@ public class GameRunner : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        // TODO: Add your drawing code here
+        foreach (var gameElement in _gameElements)
+        {
+            gameElement.Draw();
+        }
 
         base.Draw(gameTime);
     }
