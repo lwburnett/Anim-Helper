@@ -18,7 +18,10 @@ public class GameRunner : Game
 
     protected override void Initialize()
     {
-        // TODO: Add your initialization logic here
+        _graphics.IsFullScreen = false;
+        _graphics.PreferredBackBufferWidth = 1000;
+        _graphics.PreferredBackBufferHeight = 720;
+        _graphics.ApplyChanges();
 
         base.Initialize();
     }
