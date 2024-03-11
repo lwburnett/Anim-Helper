@@ -1,3 +1,3 @@
 ﻿
-using var game = new Anim_Helper.Game1();
+using var game = new Anim_Helper.GameRunner();
 game.Run();
