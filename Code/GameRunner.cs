@@ -7,7 +7,7 @@ namespace Anim_Helper;
 
 public class GameRunner : Game
 {
-    private GraphicsDeviceManager _graphics;
+    private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
     public GameRunner()
