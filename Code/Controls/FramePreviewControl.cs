@@ -14,6 +14,7 @@ internal class FramePreviewControl : IGameElement
         _center = iCenter;
         _framePreview = Texture2D.FromFile(GraphicsHelper.GetGraphicsDevice(), iFramePath);
         _label = Path.GetFileNameWithoutExtension(iFramePath);
+        _requestMoveAction = iRequestMoveAction;
 
         var leftButtonBounds = new Rectangle(
             iCenter.ToPoint() - Settings.Layout.Ribbon.FramePreview.ButtonOffset.ToPoint(),
@@ -54,10 +55,21 @@ internal class FramePreviewControl : IGameElement
         _rightButton.Draw();
     }
 
+    public void Move(int iNewIndex, Vector2 iNewCenter)
+    {
+        _center = iNewCenter;
+
+        _leftButton.Move(iNewCenter - Settings.Layout.Ribbon.FramePreview.ButtonOffset, _ => _requestMoveAction(iNewIndex, false));
+        _rightButton.Move(iNewCenter + Settings.Layout.Ribbon.FramePreview.ButtonOffset, _ => _requestMoveAction(iNewIndex, true));
+    }
+
+    public Texture2D GetSprite() => _framePreview;
+
     private Vector2 _center;
     private readonly string _label;
+    private readonly Action<int, bool> _requestMoveAction;
 
     private readonly Texture2D _framePreview;
-    private readonly IGameElement _leftButton;
-    private readonly IGameElement _rightButton;
+    private readonly TextButton _leftButton;
+    private readonly TextButton _rightButton;
 }

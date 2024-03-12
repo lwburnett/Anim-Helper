@@ -6,11 +6,6 @@ namespace Anim_Helper.UI;
 
 public abstract class UiButtonBase : IGameElement
 {
-    protected UiButtonBase(Action<GameTime> iOnClickedCallback)
-    {
-        _onClickedCallback = iOnClickedCallback;
-    }
-
     public virtual void Update(GameTime iGameTime)
     {
         if (IsOverlappingWithMouse(Mouse.GetState().Position))
@@ -51,6 +46,7 @@ public abstract class UiButtonBase : IGameElement
     public abstract void Draw();
 
     protected abstract Rectangle Bounds { get; set; }
+    protected abstract Action<GameTime> OnClickedCallback { get; set; }
 
     protected enum PressState
     {
@@ -60,7 +56,6 @@ public abstract class UiButtonBase : IGameElement
     }
 
     protected PressState StateOfPress;
-    private readonly Action<GameTime> _onClickedCallback;
     private bool _isPressed;
     private bool _isOverlapped;
 
@@ -81,7 +76,7 @@ public abstract class UiButtonBase : IGameElement
     {
         if (_isPressed && _isOverlapped)
         {
-            _onClickedCallback(iGameTime);
+            OnClickedCallback(iGameTime);
         }
 
         _isPressed = false;

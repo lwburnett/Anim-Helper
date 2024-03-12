@@ -1,19 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Anim_Helper.UI;
 using Anim_Helper.Utils;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Anim_Helper.Controls;
 
 internal class RibbonControl : IGameElement
 {
-    public RibbonControl()
+    public RibbonControl(Action<List<Texture2D>> iOnNewSpritesAction)
     {
         _importButton = new TextButton(Settings.Layout.Ribbon.ImportButtonRect, "Import", OnImport);
-        _framePreviews = new List<IGameElement>();
+        _framePreviews = new List<FramePreviewControl>();
+        _onNewSpritesAction = iOnNewSpritesAction;
 
         _importDialogMutex = new object();
         _importDialogOpen = null;
@@ -37,6 +40,32 @@ internal class RibbonControl : IGameElement
             {
                 framePreview.Update(iGameTime);
             }
+
+            if (_requestedMovementIndex.HasValue && _requestedMovementIsRight.HasValue)
+            {
+                var sourceIndex = _requestedMovementIndex.Value;
+                var destinationIndex = _requestedMovementIsRight.Value ? _requestedMovementIndex.Value + 1 : _requestedMovementIndex.Value - 1;
+
+                var sourceFrame = _framePreviews[sourceIndex];
+                var destinationFrame = _framePreviews[destinationIndex];
+
+                _framePreviews[sourceIndex] = destinationFrame;
+                _framePreviews[destinationIndex] = sourceFrame;
+
+                var newSourceCenter = new Vector2(
+                    Settings.Layout.Ribbon.FrameFirstPosition.X + Settings.Layout.Ribbon.FrameSpacingX * destinationIndex,
+                    Settings.Layout.Ribbon.FrameFirstPosition.Y);
+
+                var newDestinationCenter = new Vector2(
+                    Settings.Layout.Ribbon.FrameFirstPosition.X + Settings.Layout.Ribbon.FrameSpacingX * sourceIndex,
+                    Settings.Layout.Ribbon.FrameFirstPosition.Y);
+
+                sourceFrame.Move(destinationIndex, newSourceCenter);
+                destinationFrame.Move(sourceIndex, newDestinationCenter);
+
+                _requestedMovementIndex = null;
+                _requestedMovementIsRight = null;
+            }
         }
         else
         {
@@ -47,6 +76,8 @@ internal class RibbonControl : IGameElement
                 
                 _framePreviews.Clear();
 
+                var newSprites = new List<Texture2D>();
+
                 for (var ii = 0; ii < _importDialogResults.Count; ii++)
                 {
                     var path = _importDialogResults[ii];
@@ -54,10 +85,15 @@ internal class RibbonControl : IGameElement
                     var center = new Vector2(
                         Settings.Layout.Ribbon.FrameFirstPosition.X + Settings.Layout.Ribbon.FrameSpacingX * ii,
                         Settings.Layout.Ribbon.FrameFirstPosition.Y);
-                    _framePreviews.Add(new FramePreviewControl(ii, center, path, OnMoveFrame));
+                    var newFrameControl = new FramePreviewControl(ii, center, path, OnMoveFrame);
+                    _framePreviews.Add(newFrameControl);
+
+                    newSprites.Add(newFrameControl.GetSprite());
                 }
 
                 _importDialogResults.Clear();
+
+                _onNewSpritesAction(newSprites);
             }
         }
     }
@@ -73,12 +109,16 @@ internal class RibbonControl : IGameElement
     }
 
     private readonly IGameElement _importButton;
-    private readonly List<IGameElement> _framePreviews;
+    private readonly List<FramePreviewControl> _framePreviews;
+    private readonly Action<List<Texture2D>> _onNewSpritesAction;
 
     private readonly object _importDialogMutex;
     private bool? _importDialogOpen;
     private List<string> _importDialogResults;
     private Thread _importDialogThread;
+
+    private int? _requestedMovementIndex;
+    private bool? _requestedMovementIsRight;
 
     private void OnImport(GameTime iGameTime)
     {
@@ -123,6 +163,10 @@ internal class RibbonControl : IGameElement
 
     private void OnMoveFrame(int iIndex, bool iRight)
     {
-        // todo
+        if ((iIndex == 0 && !iRight) || (iIndex >= _framePreviews.Capacity - 1 && iRight))
+            return;
+
+        _requestedMovementIndex = iIndex;
+        _requestedMovementIsRight = iRight;
     }
 }
