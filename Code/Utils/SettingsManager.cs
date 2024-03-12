@@ -30,6 +30,8 @@ namespace Anim_Helper.Utils
             public static Color ButtonDefault = Color.LightGray;
             public static Color ButtonHover = Color.DarkGray;
             public static Color ButtonPressed = Color.Gray;
+
+            public static Color HoverBackground = Color.LightSkyBlue;
         }
     }
 }

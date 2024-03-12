@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Forms;
 using Anim_Helper.UI;
 using Anim_Helper.Utils;
 using Microsoft.Xna.Framework;
@@ -7,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Anim_Helper.Controls;
 
-internal class FramePreviewControl : IGameElement
+internal class FramePreviewControl : SelectableElementBase
 {
     public FramePreviewControl(int iIndex, Vector2 iCenter, string iFramePath, Action<int, bool> iRequestMoveAction)
     {
@@ -16,25 +17,58 @@ internal class FramePreviewControl : IGameElement
         _label = Path.GetFileNameWithoutExtension(iFramePath);
         _requestMoveAction = iRequestMoveAction;
 
+        var buttonHalfOffset = new Point((int)(Settings.Layout.Ribbon.FramePreview.ButtonSize.X / 2), 0);
+
         var leftButtonBounds = new Rectangle(
-            iCenter.ToPoint() - Settings.Layout.Ribbon.FramePreview.ButtonOffset.ToPoint(),
+            iCenter.ToPoint() - Settings.Layout.Ribbon.FramePreview.ButtonOffset.ToPoint() - buttonHalfOffset,
             Settings.Layout.Ribbon.FramePreview.ButtonSize.ToPoint());
         _leftButton = new TextButton(leftButtonBounds, "<", _ => iRequestMoveAction(iIndex, false));
 
         var rightButtonBounds = new Rectangle(
-            iCenter.ToPoint() + Settings.Layout.Ribbon.FramePreview.ButtonOffset.ToPoint(),
+            iCenter.ToPoint() + Settings.Layout.Ribbon.FramePreview.ButtonOffset.ToPoint() - buttonHalfOffset,
             Settings.Layout.Ribbon.FramePreview.ButtonSize.ToPoint());
         _rightButton = new TextButton(rightButtonBounds, ">", _ => iRequestMoveAction(iIndex, true));
+
+        var controlWidth = (int)(Settings.Layout.Ribbon.FramePreview.ButtonOffset.X * 2 + Settings.Layout.Ribbon.FramePreview.ButtonSize.X);
+        var controlHeight = (int)(Settings.Layout.Ribbon.FramePreview.ButtonOffset.X * 2 + Settings.Layout.Ribbon.FramePreview.ButtonSize.X / 2);
+
+        HitBox = new Rectangle(
+            (int)iCenter.X - controlWidth / 2, 
+            (int)iCenter.Y - controlHeight / 2,
+            controlWidth,
+            controlHeight);
+
+        var backgroundDataSize = controlWidth * controlHeight;
+        var backgroundColorData = new Color[backgroundDataSize];
+
+        for (var ii = 0; ii < backgroundDataSize; ii++)
+        {
+            backgroundColorData[ii] = Settings.Colors.HoverBackground;
+        }
+
+        _selectBackground = GraphicsHelper.CreateTexture(backgroundColorData, controlWidth, controlHeight);
     }
 
-    public void Update(GameTime iGameTime)
+    public override void Update(GameTime iGameTime)
     {
-        _leftButton.Update(iGameTime);
-        _rightButton.Update(iGameTime);
+        if (IsSelected)
+        {
+            _leftButton.Update(iGameTime);
+            _rightButton.Update(iGameTime);
+        }
+
+        base.Update(iGameTime);
     }
 
-    public void Draw()
+    public override void Draw()
     {
+        if (IsSelected)
+        {
+            GraphicsHelper.DrawTexture(_selectBackground, _center - _selectBackground.Bounds.Size.ToVector2() / 2f);
+            _leftButton.Draw();
+            _rightButton.Draw();
+        }
+
         var textureScale = _framePreview.Height > _framePreview.Width ?
             Settings.Layout.Ribbon.FramePreview.SpriteDimensions.Y / _framePreview.Height :
             Settings.Layout.Ribbon.FramePreview.SpriteDimensions.X / _framePreview.Width;
@@ -50,17 +84,23 @@ internal class FramePreviewControl : IGameElement
             new Vector2(labelCenterLocation.X - stringDimensions.X * labelScale / 2f, labelCenterLocation.Y - stringDimensions.Y * labelScale / 2f),
             Color.Black,
             labelScale);
-
-        _leftButton.Draw();
-        _rightButton.Draw();
     }
+    
+    protected sealed override Rectangle HitBox { get; set; }
 
     public void Move(int iNewIndex, Vector2 iNewCenter)
     {
         _center = iNewCenter;
 
-        _leftButton.Move(iNewCenter - Settings.Layout.Ribbon.FramePreview.ButtonOffset, _ => _requestMoveAction(iNewIndex, false));
-        _rightButton.Move(iNewCenter + Settings.Layout.Ribbon.FramePreview.ButtonOffset, _ => _requestMoveAction(iNewIndex, true));
+        HitBox = new Rectangle(
+            (int)iNewCenter.X - _selectBackground.Width / 2,
+            (int)iNewCenter.Y - _selectBackground.Height / 2,
+            _selectBackground.Width,
+            _selectBackground.Height);
+
+        var buttonHalfOffset = new Vector2((int)(Settings.Layout.Ribbon.FramePreview.ButtonSize.X / 2), 0);
+        _leftButton.Move(iNewCenter - Settings.Layout.Ribbon.FramePreview.ButtonOffset - buttonHalfOffset, _ => _requestMoveAction(iNewIndex, false));
+        _rightButton.Move(iNewCenter + Settings.Layout.Ribbon.FramePreview.ButtonOffset - buttonHalfOffset, _ => _requestMoveAction(iNewIndex, true));
     }
 
     public Texture2D GetSprite() => _framePreview;
@@ -72,4 +112,5 @@ internal class FramePreviewControl : IGameElement
     private readonly Texture2D _framePreview;
     private readonly TextButton _leftButton;
     private readonly TextButton _rightButton;
+    private readonly Texture2D _selectBackground;
 }

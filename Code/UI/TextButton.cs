@@ -11,7 +11,7 @@ internal class TextButton : UiButtonBase
 {
     public TextButton(Rectangle iBounds, string iText, Action<GameTime> iOnClickedCallback)
     {
-        Bounds = iBounds;
+        HitBox = iBounds;
         _text = iText;
         OnClickedCallback = iOnClickedCallback;
 
@@ -41,22 +41,22 @@ internal class TextButton : UiButtonBase
 
     public override void Draw()
     {
-        GraphicsHelper.DrawTexture(_backgroundTextures[StateOfPress], new Vector2(Bounds.X, Bounds.Y));
+        GraphicsHelper.DrawTexture(_backgroundTextures[StateOfPress], new Vector2(HitBox.X, HitBox.Y));
 
         var stringDimensions = GraphicsHelper.GetFont().MeasureString(_text);
         GraphicsHelper.DrawString(
             _text,
-            new Vector2(Bounds.X + (Bounds.Width - stringDimensions.X) / 2f, Bounds.Y + (Bounds.Height - stringDimensions.Y) / 2f),
+            new Vector2(HitBox.X + (HitBox.Width - stringDimensions.X) / 2f, HitBox.Y + (HitBox.Height - stringDimensions.Y) / 2f),
             Color.Black);
     }
 
     public void Move(Vector2 iNewPosition, Action<GameTime> iNewOnClickedCallback)
     {
-        Bounds = new Rectangle(iNewPosition.ToPoint(), Bounds.Size);
+        HitBox = new Rectangle(iNewPosition.ToPoint(), HitBox.Size);
         OnClickedCallback = iNewOnClickedCallback;
     }
 
-    protected sealed override Rectangle Bounds { get; set; }
+    protected sealed override Rectangle HitBox { get; set; }
 
     protected sealed override Action<GameTime> OnClickedCallback { get; set; }
 

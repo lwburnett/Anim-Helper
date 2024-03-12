@@ -65,6 +65,9 @@ internal class RibbonControl : IGameElement
 
                 _requestedMovementIndex = null;
                 _requestedMovementIsRight = null;
+
+                var newSprites = _framePreviews.Select(fp => fp.GetSprite()).ToList();
+                _onNewSpritesAction(newSprites);
             }
         }
         else
