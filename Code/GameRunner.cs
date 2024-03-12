@@ -49,20 +49,20 @@ public class GameRunner : Game
         _gameElements.Add(new MainControl());
     }
 
-    protected override void Update(GameTime gameTime)
+    protected override void Update(GameTime iGameTime)
     {
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
         foreach (var gameElement in _gameElements)
         {
-            gameElement.Update(gameTime);
+            gameElement.Update(iGameTime);
         }
 
-        base.Update(gameTime);
+        base.Update(iGameTime);
     }
 
-    protected override void Draw(GameTime gameTime)
+    protected override void Draw(GameTime iGameTime)
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
@@ -75,12 +75,12 @@ public class GameRunner : Game
         
         _spriteBatch.End();
 
-        base.Draw(gameTime);
+        base.Draw(iGameTime);
     }
 
-    private void OnResize(object sender, EventArgs e)
+    private void OnResize(object iSender, EventArgs iEventArgs)
     {
-        var gameWindow = (GameWindow)sender;
+        var gameWindow = (GameWindow)iSender;
 
         if (gameWindow == null)
             return;
