@@ -22,7 +22,10 @@ namespace Anim_Helper.Utils
                 }
             }
 
-
+            public static class Flipbook
+            {
+                public const float ScaleChangePerWheelTick = .001f;
+            }
         }
 
         public static class Colors

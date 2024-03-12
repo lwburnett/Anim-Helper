@@ -18,11 +18,14 @@ internal class FlipbookControl : SelectableElementBase
         _sprites = new List<Texture2D>();
         _fps = 2;
         _topLeft = new Vector2(400);
+        _scale = 1.0f;
         _lastMousePosition = null;
+        _lastScrollWheelValue = null;
     }
 
     public override void Update(GameTime iGameTime)
     {
+        // Handle change of frames
         if (_currentSpriteIndex >= 0)
             _currentSpriteTime += (float)iGameTime.ElapsedGameTime.TotalSeconds;
 
@@ -32,6 +35,7 @@ internal class FlipbookControl : SelectableElementBase
             _currentSpriteTime = 0;
         }
 
+        // Handle click and drag
         var mouseState = Mouse.GetState();
         if (IsSelected && IsOverlappingWithMouse(mouseState.Position) && mouseState.LeftButton == ButtonState.Pressed)
         {
@@ -45,8 +49,30 @@ internal class FlipbookControl : SelectableElementBase
             _lastMousePosition = mouseState.Position;
         }
 
-        if (IsSelected && mouseState.LeftButton == ButtonState.Released)
+        if (_lastMousePosition.HasValue && ((IsSelected && mouseState.LeftButton == ButtonState.Released) || !IsSelected))
             _lastMousePosition = null;
+
+        // Handle mouse wheel
+        if (IsSelected && IsOverlappingWithMouse(mouseState.Position))
+        {
+            if (_lastScrollWheelValue.HasValue)
+            {
+                var scrollDiff = _lastScrollWheelValue.Value - mouseState.ScrollWheelValue;
+
+                if (scrollDiff != 0)
+                {
+                    _scale += scrollDiff * Settings.Layout.Flipbook.ScaleChangePerWheelTick;
+
+                    var width = _sprites.Max(s => s.Width);
+                    var height = _sprites.Max(s => s.Height);
+                    HitBox = new Rectangle(HitBox.Location, (new Vector2(width, height) * _scale).ToPoint());
+                }
+            }
+
+            _lastScrollWheelValue = mouseState.ScrollWheelValue;
+        }
+        else if (_lastScrollWheelValue.HasValue)
+            _lastScrollWheelValue = null;
 
         base.Update(iGameTime);
     }
@@ -55,7 +81,7 @@ internal class FlipbookControl : SelectableElementBase
     {
         if (_currentSpriteIndex >= 0)
         {
-            GraphicsHelper.DrawTexture(_sprites[_currentSpriteIndex], _topLeft);
+            GraphicsHelper.DrawTexture(_sprites[_currentSpriteIndex], _topLeft, _scale);
         }
     }
 
@@ -76,6 +102,8 @@ internal class FlipbookControl : SelectableElementBase
     private List<Texture2D> _sprites;
     private int _fps;
     private Vector2 _topLeft;
+    private float _scale;
 
     private Point? _lastMousePosition;
+    private int? _lastScrollWheelValue;
 }
