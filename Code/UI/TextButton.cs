@@ -48,7 +48,7 @@ internal class TextButton : UiButtonBase
             _textFont,
             _text,
             new Vector2(Bounds.X + (Bounds.Width - stringDimensions.X) / 2f, Bounds.Y + (Bounds.Height - stringDimensions.Y) / 2f),
-            Color.White);
+            Color.Black);
     }
 
     protected override Rectangle Bounds { get; }

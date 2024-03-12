@@ -6,7 +6,7 @@ namespace Anim_Helper.Utils
     {
         public static class LayoutSettings
         {
-            public static Rectangle ImportButtonRect = new(20, 20, 200, 100);
+            public static Rectangle ImportButtonRect = new(20, 20, 100, 50);
         }
 
         public static class ColorSettings
