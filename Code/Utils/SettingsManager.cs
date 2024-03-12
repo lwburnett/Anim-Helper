@@ -11,13 +11,13 @@ namespace Anim_Helper.Utils
                 public static Rectangle ImportButtonRect = new(20, 20, 100, 50);
 
                 public static Vector2 FrameFirstPosition = new(150, 150);
-                public const int FrameSpacingX = 150;
+                public const int FrameSpacingX = 180;
 
                 public static class FramePreview
                 {
                     public static Vector2 SpriteDimensions = new(100, 100);
-                    public static Vector2 LabelOffset = new(0, 110);
-                    public static Vector2 ButtonOffset = new(110, 0);
+                    public static Vector2 LabelOffset = new(0, 70);
+                    public static Vector2 ButtonOffset = new(70, 0);
                     public static Vector2 ButtonSize = new(20, 20);
                 }
             }

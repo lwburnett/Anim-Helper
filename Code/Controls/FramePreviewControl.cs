@@ -35,17 +35,20 @@ internal class FramePreviewControl : IGameElement
     public void Draw()
     {
         var textureScale = _framePreview.Height > _framePreview.Width ?
-            Settings.Layout.Ribbon.FramePreview.SpriteDimensions.X / _framePreview.Width :
-            Settings.Layout.Ribbon.FramePreview.SpriteDimensions.Y / _framePreview.Height;
+            Settings.Layout.Ribbon.FramePreview.SpriteDimensions.Y / _framePreview.Height :
+            Settings.Layout.Ribbon.FramePreview.SpriteDimensions.X / _framePreview.Width;
         var texturePosition = _center - _framePreview.Bounds.Size.ToVector2() * textureScale / 2f;
         GraphicsHelper.DrawTexture(_framePreview, texturePosition, textureScale);
 
         var stringDimensions = GraphicsHelper.GetFont().MeasureString(_label);
+        var labelScale = Settings.Layout.Ribbon.FramePreview.ButtonOffset.X * 2 / stringDimensions.X;
+
         var labelCenterLocation = _center + Settings.Layout.Ribbon.FramePreview.LabelOffset;
         GraphicsHelper.DrawString(
             _label,
-            new Vector2(labelCenterLocation.X - stringDimensions.X / 2f, labelCenterLocation.Y - stringDimensions.Y / 2f),
-            Color.Black);
+            new Vector2(labelCenterLocation.X - stringDimensions.X * labelScale / 2f, labelCenterLocation.Y - stringDimensions.Y * labelScale / 2f),
+            Color.Black,
+            labelScale);
 
         _leftButton.Draw();
         _rightButton.Draw();

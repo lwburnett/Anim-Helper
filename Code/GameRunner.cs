@@ -66,7 +66,7 @@ public class GameRunner : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        _spriteBatch.Begin();
+        _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
 
         foreach (var gameElement in _gameElements)
         {
