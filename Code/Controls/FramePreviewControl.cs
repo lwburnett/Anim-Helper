@@ -36,16 +36,6 @@ internal class FramePreviewControl : SelectableElementBase
             (int)iCenter.Y - controlHeight / 2,
             controlWidth,
             controlHeight);
-
-        var backgroundDataSize = controlWidth * controlHeight;
-        var backgroundColorData = new Color[backgroundDataSize];
-
-        for (var ii = 0; ii < backgroundDataSize; ii++)
-        {
-            backgroundColorData[ii] = Settings.Colors.HoverBackground;
-        }
-
-        _selectBackground = GraphicsHelper.CreateTexture(backgroundColorData, controlWidth, controlHeight);
     }
 
     public override void Update(GameTime iGameTime)
@@ -59,15 +49,8 @@ internal class FramePreviewControl : SelectableElementBase
         base.Update(iGameTime);
     }
 
-    public override void Draw()
+    protected override void vDraw()
     {
-        if (IsSelected)
-        {
-            GraphicsHelper.DrawTexture(_selectBackground, _center - _selectBackground.Bounds.Size.ToVector2() / 2f);
-            _leftButton.Draw();
-            _rightButton.Draw();
-        }
-
         var textureScale = _framePreview.Height > _framePreview.Width ?
             Settings.Layout.Ribbon.FramePreview.SpriteDimensions.Y / _framePreview.Height :
             Settings.Layout.Ribbon.FramePreview.SpriteDimensions.X / _framePreview.Width;
@@ -83,19 +66,23 @@ internal class FramePreviewControl : SelectableElementBase
             new Vector2(labelCenterLocation.X - stringDimensions.X * labelScale / 2f, labelCenterLocation.Y - stringDimensions.Y * labelScale / 2f),
             Color.Black,
             labelScale);
+
+        if (IsSelected)
+        {
+            _leftButton.Draw();
+            _rightButton.Draw();
+        }
     }
-    
-    protected sealed override Rectangle HitBox { get; set; }
 
     public void Move(int iNewIndex, Vector2 iNewCenter)
     {
         _center = iNewCenter;
 
         HitBox = new Rectangle(
-            (int)iNewCenter.X - _selectBackground.Width / 2,
-            (int)iNewCenter.Y - _selectBackground.Height / 2,
-            _selectBackground.Width,
-            _selectBackground.Height);
+            (int)iNewCenter.X - SelectTexture.Width / 2,
+            (int)iNewCenter.Y - SelectTexture.Height / 2,
+            SelectTexture.Width,
+            SelectTexture.Height);
 
         var buttonHalfOffset = new Vector2((int)(Settings.Layout.Ribbon.FramePreview.ButtonSize.X / 2), 0);
         _leftButton.Move(iNewCenter - Settings.Layout.Ribbon.FramePreview.ButtonOffset - buttonHalfOffset, _ => _requestMoveAction(iNewIndex, false));
@@ -111,5 +98,4 @@ internal class FramePreviewControl : SelectableElementBase
     private readonly Texture2D _framePreview;
     private readonly TextButton _leftButton;
     private readonly TextButton _rightButton;
-    private readonly Texture2D _selectBackground;
 }

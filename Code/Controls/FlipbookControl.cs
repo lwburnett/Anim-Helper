@@ -7,17 +7,18 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Anim_Helper.Controls;
 
-internal class FlipbookControl : IGameElement
+internal class FlipbookControl : SelectableElementBase
 {
     public FlipbookControl()
     {
+        HitBox = new Rectangle();
         _currentSpriteIndex = -1;
         _currentSpriteTime = 0;
         _sprites = new List<Texture2D>();
         _fps = 2;
     }
 
-    public void Update(GameTime iGameTime)
+    public override void Update(GameTime iGameTime)
     {
         if (_currentSpriteIndex >= 0)
             _currentSpriteTime += (float)iGameTime.ElapsedGameTime.TotalSeconds;
@@ -27,9 +28,11 @@ internal class FlipbookControl : IGameElement
             _currentSpriteIndex = _currentSpriteIndex < _sprites.Count - 1 ? _currentSpriteIndex + 1 : 0;
             _currentSpriteTime = 0;
         }
-    }
 
-    public void Draw()
+        base.Update(iGameTime);
+    }
+    
+    protected override void vDraw()
     {
         if (_currentSpriteIndex >= 0)
         {
@@ -42,6 +45,11 @@ internal class FlipbookControl : IGameElement
         _currentSpriteIndex = iNewSprites.Any() ? 0 : -1;
         _currentSpriteTime = 0;
         _sprites = iNewSprites;
+
+        var width = iNewSprites.Max(s => s.Width);
+        var height = iNewSprites.Max(s => s.Height);
+
+        HitBox = new Rectangle(new Point(400), new Point(width, height));
     }
 
     private int _currentSpriteIndex;
