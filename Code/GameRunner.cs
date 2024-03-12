@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Anim_Helper.Controls;
 using Anim_Helper.UI;
 using Anim_Helper.Utils;
 using Microsoft.Xna.Framework;
@@ -34,10 +35,6 @@ public class GameRunner : Game
         _graphics.PreferredBackBufferHeight = 720;
         _graphics.ApplyChanges();
 
-        GraphicsHelper.RegisterContentManager(Content);
-        GraphicsHelper.RegisterGraphicsDevice(GraphicsDevice);
-        GraphicsHelper.RegisterSpriteBatch(_spriteBatch);
-
         base.Initialize();
     }
 
@@ -45,7 +42,11 @@ public class GameRunner : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        // TODO: use this.Content to load your game content here
+        GraphicsHelper.RegisterContentManager(Content);
+        GraphicsHelper.RegisterGraphicsDevice(GraphicsDevice);
+        GraphicsHelper.RegisterSpriteBatch(_spriteBatch);
+
+        _gameElements.Add(new MainControl());
     }
 
     protected override void Update(GameTime gameTime)
@@ -65,10 +66,14 @@ public class GameRunner : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
+        _spriteBatch.Begin();
+
         foreach (var gameElement in _gameElements)
         {
             gameElement.Draw();
         }
+        
+        _spriteBatch.End();
 
         base.Draw(gameTime);
     }
