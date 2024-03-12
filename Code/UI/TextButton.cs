@@ -20,9 +20,9 @@ internal class TextButton : UiButtonBase
 
         for (var ii = 0; ii < dataSize; ii++)
         {
-            colorDataDefault[ii] = SettingsManager.ColorSettings.ButtonDefaultColor;
-            colorDataHover[ii] = SettingsManager.ColorSettings.ButtonHoverColor;
-            colorDataPress[ii] = SettingsManager.ColorSettings.ButtonPressedColor;
+            colorDataDefault[ii] = Settings.Colors.ButtonDefault;
+            colorDataHover[ii] = Settings.Colors.ButtonHover;
+            colorDataPress[ii] = Settings.Colors.ButtonPressed;
         }
 
         var dataDefault = GraphicsHelper.CreateTexture(colorDataDefault, iBounds.Width, iBounds.Height);
@@ -35,25 +35,26 @@ internal class TextButton : UiButtonBase
             { PressState.Hover, dataHover },
             { PressState.Pressed, dataPress }
         };
-
-        _textFont = GraphicsHelper.LoadContent<SpriteFont>("PrototypeFont");
     }
 
     public override void Draw()
     {
         GraphicsHelper.DrawTexture(_backgroundTextures[StateOfPress], new Vector2(Bounds.X, Bounds.Y));
 
-        var stringDimensions = _textFont.MeasureString(_text);
+        var stringDimensions = GraphicsHelper.GetFont().MeasureString(_text);
         GraphicsHelper.DrawString(
-            _textFont,
             _text,
             new Vector2(Bounds.X + (Bounds.Width - stringDimensions.X) / 2f, Bounds.Y + (Bounds.Height - stringDimensions.Y) / 2f),
             Color.Black);
     }
 
-    protected override Rectangle Bounds { get; }
+    public void Move(Rectangle iNewBounds)
+    {
+        Bounds = iNewBounds;
+    }
+
+    protected sealed override Rectangle Bounds { get; set; }
 
     private readonly string _text;
-    private readonly SpriteFont _textFont;
     private readonly Dictionary<PressState, Texture2D> _backgroundTextures;
 }

@@ -24,16 +24,17 @@ internal class GraphicsHelper
         return sContentManager.Load<T>(iContentName);
     }
 
-    public static void DrawTexture(Texture2D iTexture, Vector2 iPosition)
+    public static void DrawTexture(Texture2D iTexture, Vector2 iPosition, float iScale = 1.0f)
     {
         Debug.Assert(sSpriteBatch != null);
-        sSpriteBatch.Draw(iTexture, iPosition, Color.White);
+        sSpriteBatch.Draw(iTexture, iPosition, iTexture.Bounds, Color.White, 0.0f, Vector2.Zero, iScale, SpriteEffects.None, 1.0f);
     }
 
-    public static void DrawString(SpriteFont iFont, string iText, Vector2 iPosition, Color iColor, float iScaling = 1.0f)
+
+    public static void DrawString(string iText, Vector2 iPosition, Color iColor, float iScaling = 1.0f)
     {
         Debug.Assert(sSpriteBatch != null);
-        sSpriteBatch.DrawString(iFont, iText, iPosition, iColor, 0.0f, Vector2.Zero, iScaling, SpriteEffects.None, 0.0f);
+        sSpriteBatch.DrawString(sFont, iText, iPosition, iColor, 0.0f, Vector2.Zero, iScaling, SpriteEffects.None, 0.0f);
     }
 
     public static void RegisterGraphicsDevice(GraphicsDevice iGraphicsDevice)
@@ -52,9 +53,16 @@ internal class GraphicsHelper
     {
         Debug.Assert(sContentManager == null);
         sContentManager = iContentManager;
+        sFont = sContentManager.Load<SpriteFont>("PrototypeFont");
     }
+
+
+    public static GraphicsDevice GetGraphicsDevice() => sGraphicsDevice;
+    public static SpriteFont GetFont() => sFont;
 
     private static GraphicsDevice sGraphicsDevice;
     private static SpriteBatch sSpriteBatch;
     private static ContentManager sContentManager;
+
+    private static SpriteFont sFont;
 }

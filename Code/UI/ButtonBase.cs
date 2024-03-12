@@ -50,7 +50,7 @@ public abstract class UiButtonBase : IGameElement
 
     public abstract void Draw();
 
-    protected abstract Rectangle Bounds { get; }
+    protected abstract Rectangle Bounds { get; set; }
 
     protected enum PressState
     {

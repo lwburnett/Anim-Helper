@@ -20,5 +20,5 @@ internal class MainControl : IGameElement
         _ribbon.Draw();
     }
 
-    private RibbonControl _ribbon;
+    private readonly RibbonControl _ribbon;
 }

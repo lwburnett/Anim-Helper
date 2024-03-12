@@ -12,7 +12,9 @@ internal class RibbonControl : IGameElement
 {
     public RibbonControl()
     {
-        _importButton = new TextButton(SettingsManager.LayoutSettings.ImportButtonRect, "Import", OnImport);
+        _importButton = new TextButton(Settings.Layout.Ribbon.ImportButtonRect, "Import", OnImport);
+        _framePreviews = new List<IGameElement>();
+
         _importDialogMutex = new object();
         _importDialogOpen = null;
         _importDialogResults = new List<string>();
@@ -30,14 +32,32 @@ internal class RibbonControl : IGameElement
         if (!isDialogCurrentlyDisplayed.HasValue)
         {
             _importButton.Update(iGameTime);
+
+            foreach (var framePreview in _framePreviews)
+            {
+                framePreview.Update(iGameTime);
+            }
         }
         else
         {
             if (!isDialogCurrentlyDisplayed.Value)
             {
                 _importDialogOpen = null;
-                _importDialogResults.Clear(); // todo do stuff with
                 _importDialogThread.Join();
+                
+                _framePreviews.Clear();
+
+                for (var ii = 0; ii < _importDialogResults.Count; ii++)
+                {
+                    var path = _importDialogResults[ii];
+
+                    var center = new Vector2(
+                        Settings.Layout.Ribbon.FrameFirstPosition.X + Settings.Layout.Ribbon.FrameSpacingX * ii,
+                        Settings.Layout.Ribbon.FrameFirstPosition.Y);
+                    _framePreviews.Add(new FramePreviewControl(ii, center, path, OnMoveFrame));
+                }
+
+                _importDialogResults.Clear();
             }
         }
     }
@@ -45,9 +65,15 @@ internal class RibbonControl : IGameElement
     public void Draw()
     {
         _importButton.Draw();
+
+        foreach (var framePreview in _framePreviews)
+        {
+            framePreview.Draw();
+        }
     }
 
     private readonly IGameElement _importButton;
+    private readonly List<IGameElement> _framePreviews;
 
     private readonly object _importDialogMutex;
     private bool? _importDialogOpen;
@@ -63,6 +89,8 @@ internal class RibbonControl : IGameElement
 
         if (isDialogCurrentlyDisplayed)
             return;
+
+        _framePreviews.Clear();
 
         _importDialogOpen = true;
         _importDialogResults.Clear();
@@ -91,5 +119,10 @@ internal class RibbonControl : IGameElement
                 _importDialogOpen = false;
             }
         }
+    }
+
+    private void OnMoveFrame(int iIndex, bool iRight)
+    {
+        // todo
     }
 }
