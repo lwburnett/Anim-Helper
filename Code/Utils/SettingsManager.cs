@@ -5,6 +5,7 @@ namespace Anim_Helper.Utils
     internal static class Settings
     {
         public const int MaxFps = 30;
+        public const int DefaultFps = 10;
 
         public static class Layout
         {

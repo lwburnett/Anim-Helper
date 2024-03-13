@@ -16,8 +16,8 @@ internal class FlipbookControl : SelectableElementBase
         _currentSpriteIndex = -1;
         _currentSpriteTime = 0;
         _sprites = new List<Texture2D>();
-        _fpsControl = new FpsControl(Vector2.Zero, 2, OnChangeFps);
-        _fps = 2;
+        _fpsControl = new FpsControl(Vector2.Zero, Settings.DefaultFps, OnChangeFps);
+        _fps = Settings.DefaultFps;
         _topLeft = new Vector2(400);
         _scale = 1.0f;
         _lastMousePosition = null;
