@@ -76,27 +76,30 @@ internal class RibbonControl : IGameElement
             {
                 _importDialogOpen = null;
                 _importDialogThread.Join();
-                
-                _framePreviews.Clear();
 
-                var newSprites = new List<Texture2D>();
-
-                for (var ii = 0; ii < _importDialogResults.Count; ii++)
+                if (_importDialogResults.Any())
                 {
-                    var path = _importDialogResults[ii];
+                    _framePreviews.Clear();
 
-                    var center = new Vector2(
-                        Settings.Layout.Ribbon.FrameFirstPosition.X + Settings.Layout.Ribbon.FrameSpacingX * ii,
-                        Settings.Layout.Ribbon.FrameFirstPosition.Y);
-                    var newFrameControl = new FramePreviewControl(ii, center, path, OnMoveFrame);
-                    _framePreviews.Add(newFrameControl);
+                    var newSprites = new List<Texture2D>();
 
-                    newSprites.Add(newFrameControl.GetSprite());
+                    for (var ii = 0; ii < _importDialogResults.Count; ii++)
+                    {
+                        var path = _importDialogResults[ii];
+
+                        var center = new Vector2(
+                            Settings.Layout.Ribbon.FrameFirstPosition.X + Settings.Layout.Ribbon.FrameSpacingX * ii,
+                            Settings.Layout.Ribbon.FrameFirstPosition.Y);
+                        var newFrameControl = new FramePreviewControl(ii, center, path, OnMoveFrame);
+                        _framePreviews.Add(newFrameControl);
+
+                        newSprites.Add(newFrameControl.GetSprite());
+                    }
+
+                    _importDialogResults.Clear();
+
+                    _onNewSpritesAction(newSprites);
                 }
-
-                _importDialogResults.Clear();
-
-                _onNewSpritesAction(newSprites);
             }
         }
     }
@@ -133,8 +136,6 @@ internal class RibbonControl : IGameElement
         if (isDialogCurrentlyDisplayed)
             return;
 
-        _framePreviews.Clear();
-
         _importDialogOpen = true;
         _importDialogResults.Clear();
 
@@ -156,6 +157,7 @@ internal class RibbonControl : IGameElement
             {
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
+                    _framePreviews.Clear();
                     _importDialogResults = openFileDialog.FileNames.ToList();
                 }
 

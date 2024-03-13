@@ -4,6 +4,8 @@ namespace Anim_Helper.Utils
 {
     internal static class Settings
     {
+        public const int MaxFps = 30;
+
         public static class Layout
         {
             public static class Ribbon
@@ -25,6 +27,7 @@ namespace Anim_Helper.Utils
             public static class Flipbook
             {
                 public const float ScaleChangePerWheelTick = .001f;
+                public const float FpsButtonSpacing = 60;
             }
         }
 

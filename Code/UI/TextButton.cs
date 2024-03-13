@@ -50,10 +50,12 @@ internal class TextButton : UiButtonBase
             Color.Black);
     }
 
-    public void Move(Vector2 iNewPosition, Action<GameTime> iNewOnClickedCallback)
+    public void Move(Vector2 iNewPosition, Action<GameTime> iNewOnClickedCallback = null)
     {
         HitBox = new Rectangle(iNewPosition.ToPoint(), HitBox.Size);
-        OnClickedCallback = iNewOnClickedCallback;
+
+        if (iNewOnClickedCallback != null)
+            OnClickedCallback = iNewOnClickedCallback;
     }
 
     protected sealed override Rectangle HitBox { get; set; }

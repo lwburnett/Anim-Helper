@@ -16,6 +16,7 @@ internal class FlipbookControl : SelectableElementBase
         _currentSpriteIndex = -1;
         _currentSpriteTime = 0;
         _sprites = new List<Texture2D>();
+        _fpsControl = new FpsControl(Vector2.Zero, 2, OnChangeFps);
         _fps = 2;
         _topLeft = new Vector2(400);
         _scale = 1.0f;
@@ -44,6 +45,7 @@ internal class FlipbookControl : SelectableElementBase
                 var mouseDiff = mouseState.Position - _lastMousePosition.Value;
                 _topLeft += mouseDiff.ToVector2();
                 HitBox = new Rectangle(_topLeft.ToPoint(), new Point(HitBox.Width, HitBox.Height));
+                _fpsControl.Move(HitBox.Location.ToVector2());
             }
 
             _lastMousePosition = mouseState.Position;
@@ -74,6 +76,10 @@ internal class FlipbookControl : SelectableElementBase
         else if (_lastScrollWheelValue.HasValue)
             _lastScrollWheelValue = null;
 
+        // Handle FPS control
+        if (IsSelected)
+            _fpsControl.Update(iGameTime);
+
         base.Update(iGameTime);
     }
     
@@ -82,6 +88,9 @@ internal class FlipbookControl : SelectableElementBase
         if (_currentSpriteIndex >= 0)
         {
             GraphicsHelper.DrawTexture(_sprites[_currentSpriteIndex], _topLeft, _scale);
+
+            if (IsSelected)
+                _fpsControl.Draw();
         }
     }
 
@@ -95,15 +104,19 @@ internal class FlipbookControl : SelectableElementBase
         var height = iNewSprites.Max(s => s.Height);
 
         HitBox = new Rectangle(_topLeft.ToPoint(), new Point(width, height));
+        _fpsControl.Move(HitBox.Location.ToVector2());
     }
 
     private int _currentSpriteIndex;
     private float _currentSpriteTime;
     private List<Texture2D> _sprites;
+    private readonly FpsControl _fpsControl;
     private int _fps;
     private Vector2 _topLeft;
     private float _scale;
 
     private Point? _lastMousePosition;
     private int? _lastScrollWheelValue;
+
+    private void OnChangeFps(int iNewFps) => _fps = iNewFps;
 }
