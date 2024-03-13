@@ -15,7 +15,7 @@ internal class RibbonControl : IGameElement
     public RibbonControl(Action<List<Texture2D>> iOnNewSpritesAction)
     {
         _importButton = new TextButton(Settings.Layout.Ribbon.ImportButtonRect, "Import", OnImport);
-        _refreshButton = new TextButton(Settings.Layout.Ribbon.RefreshButtonRect, "Refresh", OnRefresh);
+        _reloadButton = new TextButton(Settings.Layout.Ribbon.RefreshButtonRect, "Reload", OnReload);
         _framePreviews = new List<FramePreviewControl>();
         _onNewSpritesAction = iOnNewSpritesAction;
 
@@ -36,7 +36,7 @@ internal class RibbonControl : IGameElement
         if (!isDialogCurrentlyDisplayed.HasValue)
         {
             _importButton.Update(iGameTime);
-            _refreshButton.Update(iGameTime);
+            _reloadButton.Update(iGameTime);
 
             foreach (var framePreview in _framePreviews)
             {
@@ -102,11 +102,11 @@ internal class RibbonControl : IGameElement
         }
 
         if (_framePreviews.Any())
-            _refreshButton.Draw();
+            _reloadButton.Draw();
     }
 
     private readonly IGameElement _importButton;
-    private readonly IGameElement _refreshButton;
+    private readonly IGameElement _reloadButton;
     private readonly List<FramePreviewControl> _framePreviews;
     private readonly Action<List<Texture2D>> _onNewSpritesAction;
 
@@ -158,7 +158,7 @@ internal class RibbonControl : IGameElement
         }
     }
 
-    private void OnRefresh(GameTime iGameTime)
+    private void OnReload(GameTime iGameTime)
     {
         var paths = _framePreviews.Select(fpc => fpc.GetPath()).ToList();
 
