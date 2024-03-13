@@ -11,7 +11,7 @@ namespace Anim_Helper.Utils
             public static class Ribbon
             {
                 public static Rectangle ImportButtonRect = new(20, 20, 100, 50);
-                public static Rectangle RefreshButtonRect = new(150, 20, 100, 50);
+                public static Rectangle RefreshButtonRect = new(150, 20, 120, 50);
 
                 public static Vector2 FrameFirstPosition = new(150, 150);
                 public const int FrameSpacingX = 180;
