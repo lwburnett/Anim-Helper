@@ -36,6 +36,8 @@ internal class FramePreviewControl : SelectableElementBase
             (int)iCenter.Y - controlHeight / 2,
             controlWidth,
             controlHeight);
+
+        _path = iFramePath;
     }
 
     public override void Update(GameTime iGameTime)
@@ -90,6 +92,7 @@ internal class FramePreviewControl : SelectableElementBase
     }
 
     public Texture2D GetSprite() => _framePreview;
+    public string GetPath() => _path;
 
     private Vector2 _center;
     private readonly string _label;
@@ -98,4 +101,5 @@ internal class FramePreviewControl : SelectableElementBase
     private readonly Texture2D _framePreview;
     private readonly TextButton _leftButton;
     private readonly TextButton _rightButton;
+    private readonly string _path;
 }
