@@ -42,27 +42,30 @@ internal class NumericTextBox : MouseSensitiveElementBase
             HandleNewValue(_text, _preEditValue);
             _isSelected = false;
         }
-        
-        var keyboardState = Keyboard.GetState();
-        var pressedKeys = keyboardState.GetPressedKeys();
 
-        var newValues = GetPressedNumericKeyValues(pressedKeys);
-
-        if (pressedKeys.Contains(Keys.Subtract) && _canBeNegative && string.IsNullOrEmpty(_text))
-            _text += "-";
-
-        foreach (var newValue in newValues)
+        if (_isSelected)
         {
-            _text += newValue.ToString();
-        }
+            var keyboardState = Keyboard.GetState();
+            var pressedKeys = keyboardState.GetPressedKeys();
 
-        if (pressedKeys.Contains(Keys.Back) && !string.IsNullOrEmpty(_text))
-        {
-            _text = _text.Substring(0, _text.Length - 1);
-        }
+            var newValues = GetPressedNumericKeyValues(pressedKeys);
 
-        if (pressedKeys.Contains(Keys.Enter))
-            HandleNewValue(_text, _preEditValue);
+            if (pressedKeys.Contains(Keys.Subtract) && _canBeNegative && string.IsNullOrEmpty(_text))
+                _text += "-";
+
+            foreach (var newValue in newValues)
+            {
+                _text += newValue.ToString();
+            }
+
+            if (pressedKeys.Contains(Keys.Back) && !string.IsNullOrEmpty(_text))
+            {
+                _text = _text.Substring(0, _text.Length - 1);
+            }
+
+            if (pressedKeys.Contains(Keys.Enter))
+                HandleNewValue(_text, _preEditValue);
+        }
 
         base.Update(iGameTime);
     }
