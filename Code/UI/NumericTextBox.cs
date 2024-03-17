@@ -48,6 +48,9 @@ internal class NumericTextBox : MouseSensitiveElementBase
 
         var newValues = GetPressedNumericKeyValues(pressedKeys);
 
+        if (pressedKeys.Contains(Keys.Subtract) && _canBeNegative && string.IsNullOrEmpty(_text))
+            _text += "-";
+
         foreach (var newValue in newValues)
         {
             _text += newValue.ToString();
