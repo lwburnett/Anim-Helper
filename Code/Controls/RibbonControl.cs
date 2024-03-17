@@ -15,6 +15,7 @@ internal class RibbonControl : IGameElement
     {
         _importButton = new TextButton(Settings.Layout.Ribbon.ImportButtonRect, "Import", OnImport);
         _reloadButton = new TextButton(Settings.Layout.Ribbon.RefreshButtonRect, "Reload", OnReload);
+        _parserTypeButton = new ParseTypeButtonControl(Settings.Layout.Ribbon.ParserTypeRect);
         _framePreviews = new List<FramePreviewControl>();
         _onNewSpritesAction = iOnNewSpritesAction;
 
@@ -36,6 +37,7 @@ internal class RibbonControl : IGameElement
         {
             _importButton.Update(iGameTime);
             _reloadButton.Update(iGameTime);
+            _parserTypeButton.Update(iGameTime);
 
             foreach (var framePreview in _framePreviews)
             {
@@ -101,11 +103,15 @@ internal class RibbonControl : IGameElement
         }
 
         if (_framePreviews.Any())
+        {
             _reloadButton.Draw();
+            _parserTypeButton.Draw();
+        }
     }
 
     private readonly IGameElement _importButton;
     private readonly IGameElement _reloadButton;
+    private readonly IGameElement _parserTypeButton;
     private readonly List<FramePreviewControl> _framePreviews;
     private readonly Action<List<Sprite2D>> _onNewSpritesAction;
 
