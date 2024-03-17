@@ -32,6 +32,11 @@ namespace Anim_Helper.Utils
                 public const float ScaleChangePerWheelTick = .001f;
                 public const float FpsButtonSpacing = 60;
             }
+
+            public static class TextBox
+            {
+                public const int PaddingX = 10;
+            }
         }
 
         public static class Colors
@@ -41,6 +46,9 @@ namespace Anim_Helper.Utils
             public static Color ButtonPressed = Color.Gray;
 
             public static Color HoverBackground = Color.LightSkyBlue;
+
+            public static Color TextBoxDefault = Color.LightGray;
+            public static Color TextBoxSelected = Color.White;
         }
     }
 }
