@@ -30,6 +30,12 @@ internal class GraphicsHelper
         sSpriteBatch.Draw(iTexture, iPosition, iTexture.Bounds, Color.White, 0.0f, Vector2.Zero, iScale, SpriteEffects.None, 1.0f);
     }
 
+    public static void DrawTexture(Texture2D iTexture, Vector2 iPosition, Rectangle iSourceRect, float iScale = 1.0f)
+    {
+        Debug.Assert(sSpriteBatch != null);
+        sSpriteBatch.Draw(iTexture, iPosition, iSourceRect, Color.White, 0.0f, Vector2.Zero, iScale, SpriteEffects.None, 1.0f);
+    }
+
 
     public static void DrawString(string iText, Vector2 iPosition, Color iColor, float iScaling = 1.0f)
     {

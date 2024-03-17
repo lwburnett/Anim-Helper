@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Anim_Helper.UI;
+using Anim_Helper.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -28,7 +29,7 @@ internal class MainControl : IGameElement
     private readonly RibbonControl _ribbon;
     private readonly FlipbookControl _flipbook;
 
-    private void OnNewSprites(List<Texture2D> iSprites)
+    private void OnNewSprites(List<Sprite2D> iSprites)
     {
         _flipbook.SetSprites(iSprites);
     }

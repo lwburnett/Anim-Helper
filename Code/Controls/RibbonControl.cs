@@ -6,13 +6,12 @@ using System.Windows.Forms;
 using Anim_Helper.UI;
 using Anim_Helper.Utils;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Anim_Helper.Controls;
 
 internal class RibbonControl : IGameElement
 {
-    public RibbonControl(Action<List<Texture2D>> iOnNewSpritesAction)
+    public RibbonControl(Action<List<Sprite2D>> iOnNewSpritesAction)
     {
         _importButton = new TextButton(Settings.Layout.Ribbon.ImportButtonRect, "Import", OnImport);
         _reloadButton = new TextButton(Settings.Layout.Ribbon.RefreshButtonRect, "Reload", OnReload);
@@ -68,7 +67,7 @@ internal class RibbonControl : IGameElement
                 _requestedMovementIndex = null;
                 _requestedMovementIsRight = null;
 
-                var newSprites = _framePreviews.Select(fp => fp.GetSprite()).ToList();
+                var newSprites = _framePreviews.Select(fp => new Sprite2D(fp.GetSprite(), fp.GetSprite().Bounds)).ToList();
                 _onNewSpritesAction(newSprites);
             }
         }
@@ -85,7 +84,7 @@ internal class RibbonControl : IGameElement
                     _framePreviews.AddRange(GetFramePreviewsFromPaths(_importDialogResults));
                     _importDialogResults.Clear();
 
-                    var newSprites = _framePreviews.Select(fpc => fpc.GetSprite()).ToList();
+                    var newSprites = _framePreviews.Select(fp => new Sprite2D(fp.GetSprite(), fp.GetSprite().Bounds)).ToList();
                     _onNewSpritesAction(newSprites);
                 }
             }
@@ -108,7 +107,7 @@ internal class RibbonControl : IGameElement
     private readonly IGameElement _importButton;
     private readonly IGameElement _reloadButton;
     private readonly List<FramePreviewControl> _framePreviews;
-    private readonly Action<List<Texture2D>> _onNewSpritesAction;
+    private readonly Action<List<Sprite2D>> _onNewSpritesAction;
 
     private readonly object _importDialogMutex;
     private bool? _importDialogOpen;
@@ -165,7 +164,7 @@ internal class RibbonControl : IGameElement
         _framePreviews.Clear();
         _framePreviews.AddRange(GetFramePreviewsFromPaths(paths));
 
-        var newSprites = _framePreviews.Select(fpc => fpc.GetSprite()).ToList();
+        var newSprites = _framePreviews.Select(fpc => new Sprite2D(fpc.GetSprite(), fpc.GetSprite().Bounds)).ToList();
         _onNewSpritesAction(newSprites);
     }
 

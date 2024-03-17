@@ -3,7 +3,6 @@ using System.Linq;
 using Anim_Helper.UI;
 using Anim_Helper.Utils;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Anim_Helper.Controls;
@@ -15,7 +14,7 @@ internal class FlipbookControl : SelectableElementBase
         HitBox = new Rectangle();
         _currentSpriteIndex = -1;
         _currentSpriteTime = 0;
-        _sprites = new List<Texture2D>();
+        _sprites = new List<Sprite2D>();
         _fpsControl = new FpsControl(Vector2.Zero, Settings.DefaultFps, OnChangeFps);
         _fps = Settings.DefaultFps;
         _topLeft = new Vector2(400);
@@ -65,8 +64,8 @@ internal class FlipbookControl : SelectableElementBase
                 {
                     _scale += scrollDiff * Settings.Layout.Flipbook.ScaleChangePerWheelTick;
 
-                    var width = _sprites.Max(s => s.Width);
-                    var height = _sprites.Max(s => s.Height);
+                    var width = _sprites.Max(s => s.SourceRect.Width);
+                    var height = _sprites.Max(s => s.SourceRect.Height);
                     HitBox = new Rectangle(HitBox.Location, (new Vector2(width, height) * _scale).ToPoint());
                 }
             }
@@ -87,21 +86,22 @@ internal class FlipbookControl : SelectableElementBase
     {
         if (_currentSpriteIndex >= 0)
         {
-            GraphicsHelper.DrawTexture(_sprites[_currentSpriteIndex], _topLeft, _scale);
+            var sprite = _sprites[_currentSpriteIndex];
+            GraphicsHelper.DrawTexture(sprite.Texture, _topLeft, sprite.SourceRect, _scale);
 
             if (IsSelected)
                 _fpsControl.Draw();
         }
     }
 
-    public void SetSprites(List<Texture2D> iNewSprites)
+    public void SetSprites(List<Sprite2D> iNewSprites)
     {
         _currentSpriteIndex = iNewSprites.Any() ? 0 : -1;
         _currentSpriteTime = 0;
         _sprites = iNewSprites;
 
-        var width = iNewSprites.Max(s => s.Width);
-        var height = iNewSprites.Max(s => s.Height);
+        var width = iNewSprites.Max(s => s.SourceRect.Width);
+        var height = iNewSprites.Max(s => s.SourceRect.Height);
 
         HitBox = new Rectangle(_topLeft.ToPoint(), new Point(width, height));
         _fpsControl.Move(HitBox.Location.ToVector2());
@@ -109,7 +109,7 @@ internal class FlipbookControl : SelectableElementBase
 
     private int _currentSpriteIndex;
     private float _currentSpriteTime;
-    private List<Texture2D> _sprites;
+    private List<Sprite2D> _sprites;
     private readonly FpsControl _fpsControl;
     private int _fps;
     private Vector2 _topLeft;
