@@ -9,9 +9,10 @@ namespace Anim_Helper.Controls;
 
 internal class ParseTypeButtonControl : UiButtonBase
 {
-    public ParseTypeButtonControl(Rectangle iBounds)
+    public ParseTypeButtonControl(Rectangle iBounds, Action<bool> iOnParserTypeChanged)
     {
         HitBox = iBounds;
+        _onParserTypeChanged = iOnParserTypeChanged;
         OnClickedCallback = OnClicked;
 
         _isGrid = false;
@@ -59,6 +60,11 @@ internal class ParseTypeButtonControl : UiButtonBase
     private const string cFrameText = "Frame";
     private const string cGridText = "Grid";
     private readonly Dictionary<PressState, Texture2D> _backgroundTextures;
+    private readonly Action<bool> _onParserTypeChanged;
 
-    private void OnClicked(GameTime iGameTime) => _isGrid = !_isGrid;
+    private void OnClicked(GameTime iGameTime)
+    {
+        _isGrid = !_isGrid;
+        _onParserTypeChanged(_isGrid);
+    }
 }

@@ -11,11 +11,11 @@ namespace Anim_Helper.Controls;
 
 internal class RibbonControl : IGameElement
 {
-    public RibbonControl(Action<List<Sprite2D>> iOnNewSpritesAction)
+    public RibbonControl(Action<List<Sprite2D>> iOnNewSpritesAction, Action<bool> iOnParserTypeChanged)
     {
         _importButton = new TextButton(Settings.Layout.Ribbon.ImportButtonRect, "Import", OnImport);
         _reloadButton = new TextButton(Settings.Layout.Ribbon.RefreshButtonRect, "Reload", OnReload);
-        _parserTypeButton = new ParseTypeButtonControl(Settings.Layout.Ribbon.ParserTypeRect);
+        _parserTypeButton = new ParseTypeButtonControl(Settings.Layout.Ribbon.ParserTypeRect, iOnParserTypeChanged);
         _framePreviews = new List<FramePreviewControl>();
         _onNewSpritesAction = iOnNewSpritesAction;
 
