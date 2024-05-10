@@ -37,7 +37,7 @@ internal class SideBarControl : IGameElement
             Settings.Layout.SideBar.TextBoxSize.ToPoint());
         _numCellsX = 0;
         _numCellsXLabel = new LabelControl(numCellsXTopLeft, "Num Cells X", Settings.Layout.SideBar.FontScaling);
-        _NumCellsXTextBox = new NumericTextBox(numCellsXRect, false, OnNumCellsXChanged, Settings.Layout.SideBar.FontScaling);
+        _numCellsXTextBox = new NumericTextBox(numCellsXRect, false, OnNumCellsXChanged, Settings.Layout.SideBar.FontScaling);
     }
 
     public void Update(GameTime iGameTime)
@@ -49,7 +49,7 @@ internal class SideBarControl : IGameElement
         _cellHeightTextBox.Update(iGameTime);
 
         _numCellsXLabel.Update(iGameTime);
-        _NumCellsXTextBox.Update(iGameTime);
+        _numCellsXTextBox.Update(iGameTime);
     }
 
     public void Draw()
@@ -61,7 +61,7 @@ internal class SideBarControl : IGameElement
         _cellHeightTextBox.Draw();
 
         _numCellsXLabel.Draw();
-        _NumCellsXTextBox.Draw();
+        _numCellsXTextBox.Draw();
     }
 
     private readonly Action<GridConfiguration> _onNewGridConfiguration;
@@ -76,7 +76,7 @@ internal class SideBarControl : IGameElement
 
     private int _numCellsX;
     private readonly IGameElement _numCellsXLabel;
-    private readonly IGameElement _NumCellsXTextBox;
+    private readonly IGameElement _numCellsXTextBox;
 
     private void OnCellWidthChanged(int iNewVal)
     {
