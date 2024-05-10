@@ -102,6 +102,8 @@ internal class NumericTextBox : MouseSensitiveElementBase
     private string _text;
     private int _preEditValue;
 
+    private List<bool> _keyPressBuffer = new() { false, false, false, false, false, false, false, false, false, false };
+
     protected override void OnRelease(GameTime iGameTime)
     {
         _isSelected = true;
@@ -125,7 +127,7 @@ internal class NumericTextBox : MouseSensitiveElementBase
 
     private List<int> GetPressedNumericKeyValues(Keys[] iPressedKeys)
     {
-        var values = new List<int>();
+        var downKeys = Enumerable.Repeat(false, 10).ToList();
 
         foreach (var key in iPressedKeys)
         {
@@ -133,47 +135,59 @@ internal class NumericTextBox : MouseSensitiveElementBase
             {
                 case Keys.D0:
                 case Keys.NumPad0:
-                    values.Add(0);
+                    downKeys[0] = true;
                     break;
                 case Keys.D1:
                 case Keys.NumPad1:
-                    values.Add(1);
+                    downKeys[1] = true;
                     break;
                 case Keys.D2:
                 case Keys.NumPad2:
-                    values.Add(2);
+                    downKeys[2] = true;
                     break;
                 case Keys.D3:
                 case Keys.NumPad3:
-                    values.Add(3);
+                    downKeys[3] = true;
                     break;
                 case Keys.D4:
                 case Keys.NumPad4:
-                    values.Add(4);
+                    downKeys[4] = true;
                     break;
                 case Keys.D5:
                 case Keys.NumPad5:
-                    values.Add(5);
+                    downKeys[5] = true;
                     break;
                 case Keys.D6:
                 case Keys.NumPad6:
-                    values.Add(6);
+                    downKeys[6] = true;
                     break;
                 case Keys.D7:
                 case Keys.NumPad7:
-                    values.Add(7);
+                    downKeys[7] = true;
                     break;
                 case Keys.D8:
                 case Keys.NumPad8:
-                    values.Add(8);
+                    downKeys[8] = true;
                     break;
                 case Keys.D9:
                 case Keys.NumPad9:
-                    values.Add(9);
+                    downKeys[9] = true;
                     break;
             }
         }
 
-        return values;
+        var pressedKeys = new List<int>();
+        for (int ii = 0; ii < 10; ii++)
+        {
+            if (downKeys[ii] && !_keyPressBuffer[ii])
+                _keyPressBuffer[ii] = true;
+            else if (!downKeys[ii] && _keyPressBuffer[ii])
+            {
+                _keyPressBuffer[ii] = false;
+                pressedKeys.Add(ii);
+            }
+        }
+
+        return pressedKeys;
     }
 }
