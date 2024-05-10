@@ -18,8 +18,8 @@ internal class SideBarControl : IGameElement
             Settings.Layout.SideBar.TextBoxSize.ToPoint());
 
         _numX = 0;
-        _numXLabel = new LabelControl(Settings.Layout.SideBar.LabelTopLeft, "Num X");
-        _numXTextBox = new NumericTextBox(textBoxRect, false, OnNumXChanged);
+        _numXLabel = new LabelControl(Settings.Layout.SideBar.LabelTopLeft, "Num X", Settings.Layout.SideBar.FontScaling);
+        _numXTextBox = new NumericTextBox(textBoxRect, false, OnNumXChanged, Settings.Layout.SideBar.FontScaling);
     }
 
     public void Update(GameTime iGameTime)

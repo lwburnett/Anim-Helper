@@ -10,11 +10,12 @@ namespace Anim_Helper.UI;
 
 internal class NumericTextBox : MouseSensitiveElementBase
 {
-    public NumericTextBox(Rectangle iBounds, bool iCanBeNegative, Action<int> iOnValueChanged)
+    public NumericTextBox(Rectangle iBounds, bool iCanBeNegative, Action<int> iOnValueChanged, float iFontScaling = 1f)
     {
         HitBox = iBounds;
         _canBeNegative = iCanBeNegative;
         _onValueChanged = iOnValueChanged;
+        _fontScaling = iFontScaling;
 
         var backgroundDataSize = iBounds.Width * iBounds.Height;
         var backgroundDefaultColorData = new Color[backgroundDataSize];
@@ -77,19 +78,22 @@ internal class NumericTextBox : MouseSensitiveElementBase
         if (string.IsNullOrWhiteSpace(_text))
             return;
 
-        var stringDimensions = GraphicsHelper.GetFont().MeasureString(_text);
+        var stringDimensions = GraphicsHelper.GetFont().MeasureString(_text) * _fontScaling;
         GraphicsHelper.DrawString(
             _text,
             new Vector2(
                 HitBox.X + HitBox.Width - stringDimensions.X - Settings.Layout.TextBox.PaddingX, 
                 HitBox.Y + (HitBox.Height - stringDimensions.Y) / 2f),
-            Color.Black);
+            Color.Black,
+            _fontScaling);
     }
 
     protected sealed override Rectangle HitBox { get; set; }
 
+
     private readonly bool _canBeNegative;
     private readonly Action<int> _onValueChanged;
+    private readonly float _fontScaling;
 
     private readonly Texture2D _defaultBackgroundTexture;
     private readonly Texture2D _selectedBackgroundTexture;

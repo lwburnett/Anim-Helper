@@ -29,11 +29,12 @@ namespace Anim_Helper.Utils
 
             public static class SideBar
             {
-                public static Vector2 LabelTopLeft = new(20, 80);
-                public static Vector2 TextBoxTopLeft = new(60, 80);
+                public static Vector2 LabelTopLeft = new(20, 300);
+                public static Vector2 TextBoxTopLeft = new(100, 299);
                 public const int VerticalSpacing = 40;
 
-                public static Vector2 TextBoxSize = new(60, 20);
+                public static Vector2 TextBoxSize = new(100, 30);
+                public static float FontScaling = .75f;
             }
 
             public static class Flipbook

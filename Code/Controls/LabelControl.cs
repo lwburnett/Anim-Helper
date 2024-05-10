@@ -6,10 +6,11 @@ namespace Anim_Helper.Controls;
 
 internal class LabelControl : IGameElement
 {
-    public LabelControl(Vector2 iTopLeft, string iText)
+    public LabelControl(Vector2 iTopLeft, string iText, float iFontScaling = 1f)
     {
         _topLeft = iTopLeft;
         _text = iText;
+        _fontScaling = iFontScaling;
     }
 
     public void Update(GameTime iGameTime)
@@ -18,9 +19,10 @@ internal class LabelControl : IGameElement
 
     public void Draw()
     {
-        GraphicsHelper.DrawString(_text, _topLeft, Color.Black);
+        GraphicsHelper.DrawString(_text, _topLeft, Color.Black, _fontScaling);
     }
 
     private readonly Vector2 _topLeft;
     private readonly string _text;
+    private readonly float _fontScaling;
 }
