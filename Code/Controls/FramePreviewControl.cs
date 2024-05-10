@@ -1,19 +1,16 @@
 ﻿using System;
-using System.IO;
 using Anim_Helper.UI;
 using Anim_Helper.Utils;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Anim_Helper.Controls;
 
 internal class FramePreviewControl : SelectableElementBase
 {
-    public FramePreviewControl(int iIndex, Vector2 iCenter, string iFramePath, Action<int, bool> iRequestMoveAction)
+    public FramePreviewControl(int iIndex, Vector2 iCenter, Sprite2D iSprite, Action<int, bool> iRequestMoveAction)
     {
         _center = iCenter;
-        _framePreview = Texture2D.FromFile(GraphicsHelper.GetGraphicsDevice(), iFramePath);
-        _label = Path.GetFileNameWithoutExtension(iFramePath);
+        _framePreview = iSprite;
         _requestMoveAction = iRequestMoveAction;
 
         var buttonHalfOffset = new Point((int)(Settings.Layout.Ribbon.FramePreview.ButtonSize.X / 2), 0);
@@ -36,8 +33,6 @@ internal class FramePreviewControl : SelectableElementBase
             (int)iCenter.Y - controlHeight / 2,
             controlWidth,
             controlHeight);
-
-        _path = iFramePath;
     }
 
     public override void Update(GameTime iGameTime)
@@ -53,18 +48,18 @@ internal class FramePreviewControl : SelectableElementBase
 
     protected override void vDraw()
     {
-        var textureScale = _framePreview.Height > _framePreview.Width ?
-            Settings.Layout.Ribbon.FramePreview.SpriteDimensions.Y / _framePreview.Height :
-            Settings.Layout.Ribbon.FramePreview.SpriteDimensions.X / _framePreview.Width;
-        var texturePosition = _center - _framePreview.Bounds.Size.ToVector2() * textureScale / 2f;
-        GraphicsHelper.DrawTexture(_framePreview, texturePosition, textureScale);
+        var textureScale = _framePreview.SourceRect.Height > _framePreview.SourceRect.Width ?
+            Settings.Layout.Ribbon.FramePreview.SpriteDimensions.Y / _framePreview.SourceRect.Height :
+            Settings.Layout.Ribbon.FramePreview.SpriteDimensions.X / _framePreview.SourceRect.Width;
+        var texturePosition = _center - _framePreview.SourceRect.Size.ToVector2() * textureScale / 2f;
+        GraphicsHelper.DrawTexture(_framePreview.Texture, texturePosition, textureScale);
 
-        var stringDimensions = GraphicsHelper.GetFont().MeasureString(_label);
+        var stringDimensions = GraphicsHelper.GetFont().MeasureString(_framePreview.Label);
         var labelScale = Settings.Layout.Ribbon.FramePreview.ButtonOffset.X * 2 / stringDimensions.X;
 
         var labelCenterLocation = _center + Settings.Layout.Ribbon.FramePreview.LabelOffset;
         GraphicsHelper.DrawString(
-            _label,
+            _framePreview.Label,
             new Vector2(labelCenterLocation.X - stringDimensions.X * labelScale / 2f, labelCenterLocation.Y - stringDimensions.Y * labelScale / 2f),
             Color.Black,
             labelScale);
@@ -91,15 +86,12 @@ internal class FramePreviewControl : SelectableElementBase
         _rightButton.Move(iNewCenter + Settings.Layout.Ribbon.FramePreview.ButtonOffset - buttonHalfOffset, _ => _requestMoveAction(iNewIndex, true));
     }
 
-    public Texture2D GetSprite() => _framePreview;
-    public string GetPath() => _path;
+    public Sprite2D GetSprite() => _framePreview;
 
     private Vector2 _center;
-    private readonly string _label;
     private readonly Action<int, bool> _requestMoveAction;
 
-    private readonly Texture2D _framePreview;
+    private readonly Sprite2D _framePreview;
     private readonly TextButton _leftButton;
     private readonly TextButton _rightButton;
-    private readonly string _path;
 }

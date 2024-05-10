@@ -14,7 +14,7 @@ internal class FlipbookControl : SelectableElementBase
         HitBox = new Rectangle();
         _currentSpriteIndex = -1;
         _currentSpriteTime = 0;
-        _sprites = new List<Sprite2D>();
+        _frames = new List<Sprite2D>();
         _fpsControl = new FpsControl(Vector2.Zero, Settings.DefaultFps, OnChangeFps);
         _fps = Settings.DefaultFps;
         _topLeft = new Vector2(400);
@@ -25,13 +25,16 @@ internal class FlipbookControl : SelectableElementBase
 
     public override void Update(GameTime iGameTime)
     {
+        if (!_frames.Any())
+            return;
+
         // Handle change of frames
         if (_currentSpriteIndex >= 0)
             _currentSpriteTime += (float)iGameTime.ElapsedGameTime.TotalSeconds;
 
         if (_currentSpriteTime >= 1.0f / _fps)
         {
-            _currentSpriteIndex = _currentSpriteIndex < _sprites.Count - 1 ? _currentSpriteIndex + 1 : 0;
+            _currentSpriteIndex = _currentSpriteIndex < _frames.Count - 1 ? _currentSpriteIndex + 1 : 0;
             _currentSpriteTime = 0;
         }
 
@@ -64,8 +67,8 @@ internal class FlipbookControl : SelectableElementBase
                 {
                     _scale += scrollDiff * Settings.Layout.Flipbook.ScaleChangePerWheelTick;
 
-                    var width = _sprites.Max(s => s.SourceRect.Width);
-                    var height = _sprites.Max(s => s.SourceRect.Height);
+                    var width = _frames.Max(s => s.SourceRect.Width);
+                    var height = _frames.Max(s => s.SourceRect.Height);
                     HitBox = new Rectangle(HitBox.Location, (new Vector2(width, height) * _scale).ToPoint());
                 }
             }
@@ -86,7 +89,7 @@ internal class FlipbookControl : SelectableElementBase
     {
         if (_currentSpriteIndex >= 0)
         {
-            var sprite = _sprites[_currentSpriteIndex];
+            var sprite = _frames[_currentSpriteIndex];
             GraphicsHelper.DrawTexture(sprite.Texture, _topLeft, sprite.SourceRect, _scale);
 
             if (IsSelected)
@@ -94,14 +97,17 @@ internal class FlipbookControl : SelectableElementBase
         }
     }
 
-    public void SetSprites(List<Sprite2D> iNewSprites)
+    public void SetFrames(List<Sprite2D> iNewFrames)
     {
-        _currentSpriteIndex = iNewSprites.Any() ? 0 : -1;
+        _currentSpriteIndex = iNewFrames.Any() ? 0 : -1;
         _currentSpriteTime = 0;
-        _sprites = iNewSprites;
+        _frames = iNewFrames;
 
-        var width = iNewSprites.Max(s => s.SourceRect.Width);
-        var height = iNewSprites.Max(s => s.SourceRect.Height);
+        if (!_frames.Any())
+            return;
+
+        var width = iNewFrames.Max(s => s.SourceRect.Width);
+        var height = iNewFrames.Max(s => s.SourceRect.Height);
 
         HitBox = new Rectangle(_topLeft.ToPoint(), new Point(width, height));
         _fpsControl.Move(HitBox.Location.ToVector2());
@@ -109,7 +115,7 @@ internal class FlipbookControl : SelectableElementBase
 
     private int _currentSpriteIndex;
     private float _currentSpriteTime;
-    private List<Sprite2D> _sprites;
+    private List<Sprite2D> _frames;
     private readonly FpsControl _fpsControl;
     private int _fps;
     private Vector2 _topLeft;

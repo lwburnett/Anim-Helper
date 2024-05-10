@@ -6,18 +6,22 @@ using System.Windows.Forms;
 using Anim_Helper.UI;
 using Anim_Helper.Utils;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Anim_Helper.Controls;
 
 internal class RibbonControl : IGameElement
 {
-    public RibbonControl(Action<List<Sprite2D>> iOnNewSpritesAction, Action<bool> iOnParserTypeChanged)
+    public RibbonControl(Action<List<ImportedImage>> iOnNewImportAction, Action<List<Sprite2D>> iOnFramesMoved, Action iOnReload, Action<bool> iOnParserTypeChanged)
     {
         _importButton = new TextButton(Settings.Layout.Ribbon.ImportButtonRect, "Import", OnImport);
         _reloadButton = new TextButton(Settings.Layout.Ribbon.RefreshButtonRect, "Reload", OnReload);
         _parserTypeButton = new ParseTypeButtonControl(Settings.Layout.Ribbon.ParserTypeRect, iOnParserTypeChanged);
         _framePreviews = new List<FramePreviewControl>();
-        _onNewSpritesAction = iOnNewSpritesAction;
+        _onNewImportAction = iOnNewImportAction;
+        _onFramesMoved = iOnFramesMoved;
+        _onReload = iOnReload;
+        _framesSet = false;
 
         _importDialogMutex = new object();
         _importDialogOpen = null;
@@ -69,8 +73,8 @@ internal class RibbonControl : IGameElement
                 _requestedMovementIndex = null;
                 _requestedMovementIsRight = null;
 
-                var newSprites = _framePreviews.Select(fp => new Sprite2D(fp.GetSprite(), fp.GetSprite().Bounds)).ToList();
-                _onNewSpritesAction(newSprites);
+                var newFrames = _framePreviews.Select(fp => fp.GetSprite()).ToList();
+                _onFramesMoved(newFrames);
             }
         }
         else
@@ -82,12 +86,10 @@ internal class RibbonControl : IGameElement
 
                 if (_importDialogResults.Any())
                 {
-                    _framePreviews.Clear();
-                    _framePreviews.AddRange(GetFramePreviewsFromPaths(_importDialogResults));
+                    var newTextures = GetImagesFromPaths(_importDialogResults);
                     _importDialogResults.Clear();
 
-                    var newSprites = _framePreviews.Select(fp => new Sprite2D(fp.GetSprite(), fp.GetSprite().Bounds)).ToList();
-                    _onNewSpritesAction(newSprites);
+                    _onNewImportAction(newTextures);
                 }
             }
         }
@@ -102,18 +104,39 @@ internal class RibbonControl : IGameElement
             framePreview.Draw();
         }
 
-        if (_framePreviews.Any())
+        if (_framesSet)
         {
             _reloadButton.Draw();
             _parserTypeButton.Draw();
         }
     }
 
+    public void SetPreviewFrames(List<Sprite2D> iFrames)
+    {
+        var newFramePreviews = new List<FramePreviewControl>();
+
+        for (var ii = 0; ii < iFrames.Count; ii++)
+        {
+            var center = new Vector2(
+                Settings.Layout.Ribbon.FrameFirstPosition.X + Settings.Layout.Ribbon.FrameSpacingX * ii,
+                Settings.Layout.Ribbon.FrameFirstPosition.Y);
+            var newFrameControl = new FramePreviewControl(ii, center, iFrames[ii], OnMoveFrame);
+            newFramePreviews.Add(newFrameControl);
+        }
+
+        _framePreviews.Clear();
+        _framePreviews.AddRange(newFramePreviews);
+        _framesSet = true;
+    }
+
     private readonly IGameElement _importButton;
     private readonly IGameElement _reloadButton;
     private readonly IGameElement _parserTypeButton;
     private readonly List<FramePreviewControl> _framePreviews;
-    private readonly Action<List<Sprite2D>> _onNewSpritesAction;
+    private readonly Action<List<ImportedImage>> _onNewImportAction;
+    private readonly Action<List<Sprite2D>> _onFramesMoved;
+    private readonly Action _onReload;
+    private bool _framesSet;
 
     private readonly object _importDialogMutex;
     private bool? _importDialogOpen;
@@ -165,13 +188,7 @@ internal class RibbonControl : IGameElement
 
     private void OnReload(GameTime iGameTime)
     {
-        var paths = _framePreviews.Select(fpc => fpc.GetPath()).ToList();
-
-        _framePreviews.Clear();
-        _framePreviews.AddRange(GetFramePreviewsFromPaths(paths));
-
-        var newSprites = _framePreviews.Select(fpc => new Sprite2D(fpc.GetSprite(), fpc.GetSprite().Bounds)).ToList();
-        _onNewSpritesAction(newSprites);
+        _onReload();
     }
 
     private void OnMoveFrame(int iIndex, bool iRight)
@@ -183,21 +200,5 @@ internal class RibbonControl : IGameElement
         _requestedMovementIsRight = iRight;
     }
 
-    private List<FramePreviewControl> GetFramePreviewsFromPaths(List<string> iPaths)
-    {
-        var newSprites = new List<FramePreviewControl>();
-
-        for (var ii = 0; ii < iPaths.Count; ii++)
-        {
-            var path = iPaths[ii];
-
-            var center = new Vector2(
-                Settings.Layout.Ribbon.FrameFirstPosition.X + Settings.Layout.Ribbon.FrameSpacingX * ii,
-                Settings.Layout.Ribbon.FrameFirstPosition.Y);
-            var newFrameControl = new FramePreviewControl(ii, center, path, OnMoveFrame);
-            newSprites.Add(newFrameControl);
-        }
-
-        return newSprites;
-    }
+    private List<ImportedImage> GetImagesFromPaths(List<string> iPaths) => iPaths.Select(p => new ImportedImage(p, Texture2D.FromFile(GraphicsHelper.GetGraphicsDevice(), p))).ToList();
 }
