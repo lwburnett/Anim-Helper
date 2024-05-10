@@ -27,6 +27,15 @@ namespace Anim_Helper.Utils
                 }
             }
 
+            public static class SideBar
+            {
+                public static Vector2 LabelTopLeft = new(20, 80);
+                public static Vector2 TextBoxTopLeft = new(60, 80);
+                public const int VerticalSpacing = 40;
+
+                public static Vector2 TextBoxSize = new(60, 20);
+            }
+
             public static class Flipbook
             {
                 public const float ScaleChangePerWheelTick = .001f;

@@ -2,6 +2,7 @@
 using Anim_Helper.UI;
 using Anim_Helper.Utils;
 using Microsoft.Xna.Framework;
+using Utils;
 
 namespace Anim_Helper.Controls;
 
@@ -11,7 +12,7 @@ internal class MainControl : IGameElement
     {
         _ribbon = new RibbonControl(OnNewSprites, OnParserTypeChanged);
         _flipbook = new FlipbookControl();
-        _sideBar = new SideBarControl();
+        _sideBar = new SideBarControl(OnGridConfigurationChanged);
         _isSideBarVisible = false;
     }
 
@@ -46,5 +47,10 @@ internal class MainControl : IGameElement
     private void OnParserTypeChanged(bool iIsGrid)
     {
         _isSideBarVisible = iIsGrid;
+    }
+
+    private void OnGridConfigurationChanged(GridConfiguration iNewConfiguration)
+    {
+
     }
 }
