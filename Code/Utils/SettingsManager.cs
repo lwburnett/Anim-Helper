@@ -30,7 +30,7 @@ namespace Anim_Helper.Utils
             public static class SideBar
             {
                 public static Vector2 LabelTopLeft = new(20, 300);
-                public static Vector2 TextBoxTopLeft = new(100, 299);
+                public static Vector2 TextBoxTopLeft = new(150, 299);
                 public const int VerticalSpacing = 40;
 
                 public static Vector2 TextBoxSize = new(100, 30);
