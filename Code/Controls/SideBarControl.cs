@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Anim_Helper.UI;
 using Anim_Helper.Utils;
 using Microsoft.Xna.Framework;
@@ -17,45 +16,46 @@ internal class SideBarControl : IGameElement
             Settings.Layout.SideBar.TextBoxTopLeft.ToPoint(),
             Settings.Layout.SideBar.TextBoxSize.ToPoint());
 
-        _numX = 0;
-        _numXLabel = new LabelControl(Settings.Layout.SideBar.LabelTopLeft, "Num X", Settings.Layout.SideBar.FontScaling);
-        _numXTextBox = new NumericTextBox(textBoxRect, false, OnNumXChanged, Settings.Layout.SideBar.FontScaling);
+        _cellWidth = 0;
+        _cellWidthLabel = new LabelControl(Settings.Layout.SideBar.LabelTopLeft, "Cell Width", Settings.Layout.SideBar.FontScaling);
+        _cellWidthTextBox = new NumericTextBox(textBoxRect, false, OnCellWidthChanged, Settings.Layout.SideBar.FontScaling);
     }
 
     public void Update(GameTime iGameTime)
     {
-        _numXLabel.Update(iGameTime);
-        _numXTextBox.Update(iGameTime);
+        _cellWidthLabel.Update(iGameTime);
+        _cellWidthTextBox.Update(iGameTime);
     }
 
     public void Draw()
     {
-        _numXLabel.Draw();
-        _numXTextBox.Draw();
+        _cellWidthLabel.Draw();
+        _cellWidthTextBox.Draw();
     }
 
     private readonly Action<GridConfiguration> _onNewGridConfiguration;
 
-    private int _numX;
-    private readonly IGameElement _numXLabel;
-    private readonly IGameElement _numXTextBox;
+    private int _cellWidth;
+    private readonly IGameElement _cellWidthLabel;
+    private readonly IGameElement _cellWidthTextBox;
 
-    private void OnNumXChanged(int iNewVal)
+    private void OnCellWidthChanged(int iNewVal)
     {
-        _numX = iNewVal;
+        _cellWidth = iNewVal;
         PublishGridConfiguration();
     }
 
     private void PublishGridConfiguration()
     {
         var newConfig = new GridConfiguration(
-            _numX, 
+            _cellWidth, 
             0, 
             0, 
             0, 
             0, 
             0, 
-            new List<int>{0, 0, 0, 0});
+            0,
+            0);
 
         _onNewGridConfiguration(newConfig);
     }

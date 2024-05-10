@@ -4,29 +4,39 @@ namespace Utils;
 
 internal struct GridConfiguration
 {
-    public GridConfiguration(int iNumX, int iNumY, int iXOffset, int iYOffset, int iWidth, int iHeight, List<int> iCellPadding)
+    public GridConfiguration(
+        int iCellWidth, 
+        int iCellHeight, 
+        int iNumCellsX, 
+        int iNumCellsY, 
+        int iMarginX, 
+        int iMarginY, 
+        int iSpacingX, 
+        int iSpacingY)
     {
-        NumX = iNumX;
-        NumY = iNumY;
-        XOffset = iXOffset;
-        YOffset = iYOffset;
-        Width = iWidth;
-        Height = iHeight;
-        CellPadding = iCellPadding;
+        CellWidth = iCellWidth;
+        CellHeight = iCellHeight;
+        NumCellsX = iNumCellsX;
+        NumCellsY = iNumCellsY;
+        MarginX = iMarginX;
+        MarginY = iMarginY;
+        SpacingX = iSpacingX;
+        SpacingY = iSpacingY;
     }
+    
+    public int CellWidth { get; }
 
-    public int NumX { get; }
+    public int CellHeight { get; }
 
-    public int NumY { get; }
+    public int NumCellsX { get; }
 
-    public int XOffset { get; }
+    public int NumCellsY { get; }
 
-    public int YOffset { get; }
+    public int MarginX { get; }
 
-    public int Width { get; }
+    public int MarginY { get; }
 
-    public int Height { get; }
+    public int SpacingX { get; }
 
-    // Top, Right, Bottom, Left
-    public List<int> CellPadding { get; }
+    public int SpacingY { get; }
 }
