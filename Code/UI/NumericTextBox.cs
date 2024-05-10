@@ -56,16 +56,26 @@ internal class NumericTextBox : MouseSensitiveElementBase
 
             foreach (var newValue in newValues)
             {
-                _text += newValue.ToString();
+                if (_text.Trim() != "0")
+                    _text += newValue.ToString();
+                else
+                    _text = newValue.ToString();
             }
 
-            if (pressedKeys.Contains(Keys.Back) && !string.IsNullOrEmpty(_text))
+            if (!_backPressBuffer && pressedKeys.Contains(Keys.Back)) 
+                _backPressBuffer = true;
+
+            if (_backPressBuffer && !pressedKeys.Contains(Keys.Back) && !string.IsNullOrEmpty(_text))
             {
+                _backPressBuffer = false;
                 _text = _text.Substring(0, _text.Length - 1);
             }
 
             if (pressedKeys.Contains(Keys.Enter))
+            {
                 HandleNewValue(_text, _preEditValue);
+                _isSelected = false;
+            }
         }
 
         base.Update(iGameTime);
@@ -102,7 +112,8 @@ internal class NumericTextBox : MouseSensitiveElementBase
     private string _text;
     private int _preEditValue;
 
-    private List<bool> _keyPressBuffer = new() { false, false, false, false, false, false, false, false, false, false };
+    private readonly List<bool> _keyPressBuffer = new() { false, false, false, false, false, false, false, false, false, false };
+    private bool _backPressBuffer;
 
     protected override void OnRelease(GameTime iGameTime)
     {
