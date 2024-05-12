@@ -83,7 +83,7 @@ internal class SideBarControl : SelectableElementBase
         var hitBoxTopLeft = cellWidthTopLeft;
         var hitBoxSize = new Vector2(
             Settings.Layout.SideBar.TextBoxTopLeft.X + Settings.Layout.SideBar.TextBoxSize.X - Settings.Layout.SideBar.LabelTopLeft.X,
-            spacingYRect.Bottom);
+            spacingYRect.Bottom - cellWidthTopLeft.Y);
         HitBox = new Rectangle(hitBoxTopLeft.ToPoint(), hitBoxSize.ToPoint());
     }
 
