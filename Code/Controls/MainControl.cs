@@ -69,6 +69,9 @@ internal class MainControl : IGameElement
         var frames = _isSideBarVisible ? 
             GridParser.Parse(_importedImages.FirstOrDefault().Texture, frameName, _gridConfiguration) : 
             iImages.Select(i => new Sprite2D(Path.GetFileNameWithoutExtension(i.Path), i.Texture, i.Texture.Bounds)).ToList();
+
+        _gridParsePreview.SetImage(frames.FirstOrDefault()?.Texture);
+
         OnNewFrames(frames);
     }
 
@@ -88,8 +91,10 @@ internal class MainControl : IGameElement
         _gridConfiguration = iNewConfiguration;
 
         var frameName = Path.GetFileNameWithoutExtension(_importedImages.FirstOrDefault().Path);
-
         var newFrames = GridParser.Parse(_importedImages.FirstOrDefault().Texture, frameName, _gridConfiguration);
+
+        _gridParsePreview.SetPreviewBounds(newFrames.Select(f => f.SourceRect).ToList());
+
         OnNewFrames(newFrames);
     }
 
@@ -97,7 +102,6 @@ internal class MainControl : IGameElement
     {
         _ribbon.SetPreviewFrames(iFrames);
         _flipbook.SetFrames(iFrames);
-        _gridParsePreview.SetImage(iFrames.FirstOrDefault()?.Texture);
     }
 
     private void OnSideBarSelectionChanged(bool iIsSelected)

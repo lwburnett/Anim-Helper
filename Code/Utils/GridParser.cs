@@ -23,20 +23,4 @@ internal static class GridParser
 
         return sprites;
     }
-
-    public static List<Rectangle> ParsePreview(Texture2D iTexture, GridConfiguration iGridConfiguration)
-    {
-        var sprites = new List<Rectangle>();
-
-        for (int yy = 0; yy < iGridConfiguration.NumCellsY; yy++)
-        for (int xx = 0; xx < iGridConfiguration.NumCellsX; xx++)
-        {
-            var thisLeft = iGridConfiguration.MarginX + 2 * xx * iGridConfiguration.SpacingX + xx * iGridConfiguration.CellWidth;
-            var thisTop = iGridConfiguration.MarginY + 2 * yy * iGridConfiguration.SpacingY + yy * iGridConfiguration.CellHeight;
-
-            sprites.Add(new Rectangle(thisLeft, thisTop, iGridConfiguration.CellWidth, iGridConfiguration.CellHeight));
-        }
-
-        return sprites;
-    }
 }

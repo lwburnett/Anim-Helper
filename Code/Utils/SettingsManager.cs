@@ -47,6 +47,11 @@ namespace Anim_Helper.Utils
             {
                 public const int PaddingX = 10;
             }
+
+            public static class GridPreview
+            {
+                public const int CellLineWidth = 1;
+            }
         }
 
         public static class Colors
@@ -59,6 +64,8 @@ namespace Anim_Helper.Utils
 
             public static Color TextBoxDefault = Color.LightGray;
             public static Color TextBoxSelected = Color.White;
+
+            public static Color GridPreview = Color.Red;
         }
     }
 }
