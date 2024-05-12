@@ -52,7 +52,7 @@ internal class FramePreviewControl : SelectableElementBase
             Settings.Layout.Ribbon.FramePreview.SpriteDimensions.Y / _framePreview.SourceRect.Height :
             Settings.Layout.Ribbon.FramePreview.SpriteDimensions.X / _framePreview.SourceRect.Width;
         var texturePosition = _center - _framePreview.SourceRect.Size.ToVector2() * textureScale / 2f;
-        GraphicsHelper.DrawTexture(_framePreview.Texture, texturePosition, textureScale);
+        GraphicsHelper.DrawTexture(_framePreview.Texture, texturePosition, _framePreview.SourceRect, textureScale);
 
         var stringDimensions = GraphicsHelper.GetFont().MeasureString(_framePreview.Label);
         var labelScale = Settings.Layout.Ribbon.FramePreview.ButtonOffset.X * 2 / stringDimensions.X;

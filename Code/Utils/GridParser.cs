@@ -11,11 +11,11 @@ internal static class GridParser
     {
         var sprites = new List<Sprite2D>();
 
-        for (int xx = 0; xx < iGridConfiguration.NumCellsX; xx++)
         for (int yy = 0; yy < iGridConfiguration.NumCellsY; yy++)
+        for (int xx = 0; xx < iGridConfiguration.NumCellsX; xx++)
         {
             var thisLeft = iGridConfiguration.MarginX + 2 * xx * iGridConfiguration.SpacingX + xx * iGridConfiguration.CellWidth;
-            var thisTop = iGridConfiguration.MarginY + 2 * yy * iGridConfiguration.SpacingY + xx * iGridConfiguration.CellHeight;
+            var thisTop = iGridConfiguration.MarginY + 2 * yy * iGridConfiguration.SpacingY + yy * iGridConfiguration.CellHeight;
 
             var thisFrameNum = xx + iGridConfiguration.NumCellsX * yy;
             sprites.Add(new Sprite2D($"{iName}_{thisFrameNum}", iTexture, new Rectangle(thisLeft, thisTop, iGridConfiguration.CellWidth, iGridConfiguration.CellHeight)));

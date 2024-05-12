@@ -49,8 +49,11 @@ internal class MainControl : IGameElement
     private void OnNewImagesImported(List<ImportedImage> iImages)
     {
         _importedImages = iImages;
+
+        var frameName = Path.GetFileNameWithoutExtension(_importedImages.FirstOrDefault().Path);
+
         var frames = _isSideBarVisible ? 
-            GridParser.Parse(_importedImages.FirstOrDefault().Texture, _importedImages.FirstOrDefault().Path, _gridConfiguration) : 
+            GridParser.Parse(_importedImages.FirstOrDefault().Texture, frameName, _gridConfiguration) : 
             iImages.Select(i => new Sprite2D(Path.GetFileNameWithoutExtension(i.Path), i.Texture, i.Texture.Bounds)).ToList();
         OnNewFrames(frames);
     }
@@ -69,7 +72,10 @@ internal class MainControl : IGameElement
     private void OnGridConfigurationChanged(GridConfiguration iNewConfiguration)
     {
         _gridConfiguration = iNewConfiguration;
-        var newFrames = GridParser.Parse(_importedImages.FirstOrDefault().Texture, _importedImages.FirstOrDefault().Path, _gridConfiguration);
+
+        var frameName = Path.GetFileNameWithoutExtension(_importedImages.FirstOrDefault().Path);
+
+        var newFrames = GridParser.Parse(_importedImages.FirstOrDefault().Texture, frameName, _gridConfiguration);
         OnNewFrames(newFrames);
     }
 
