@@ -14,15 +14,22 @@ internal class MainControl : IGameElement
     {
         _ribbon = new RibbonControl(OnNewImagesImported, OnNewFrames, OnReload, OnParserTypeChanged);
         _flipbook = new FlipbookControl();
-        _sideBar = new SideBarControl(OnGridConfigurationChanged);
+        _gridParsePreview = new GridParsePreviewControl(OnGridParsePreviewSelectionChanged);
+        _sideBar = new SideBarControl(OnGridConfigurationChanged, OnSideBarSelectionChanged);
         _isSideBarVisible = false;
+        _isSideBarSelected = false;
+        _isGridParsePreviewSelected = false;
         _gridConfiguration = new GridConfiguration(0, 0, 0, 0, 0, 0, 0, 0);
     }
 
     public void Update(GameTime iGameTime)
     {
         _ribbon.Update(iGameTime);
-        _flipbook.Update(iGameTime);
+        
+        if (_isSideBarSelected || _isGridParsePreviewSelected)
+            _gridParsePreview.Update(iGameTime);
+        else
+            _flipbook.Update(iGameTime);
 
         if (_isSideBarVisible)
             _sideBar.Update(iGameTime);
@@ -31,7 +38,11 @@ internal class MainControl : IGameElement
     public void Draw()
     {
         _ribbon.Draw();
-        _flipbook.Draw();
+
+        if (_isSideBarSelected || _isGridParsePreviewSelected)
+            _gridParsePreview.Draw();
+        else
+            _flipbook.Draw();
 
         if (_isSideBarVisible)
             _sideBar.Draw();
@@ -39,11 +50,14 @@ internal class MainControl : IGameElement
 
     private readonly RibbonControl _ribbon;
     private readonly FlipbookControl _flipbook;
+    private readonly GridParsePreviewControl _gridParsePreview;
     private readonly SideBarControl _sideBar;
 
     private List<ImportedImage> _importedImages;
 
     private bool _isSideBarVisible;
+    private bool _isSideBarSelected;
+    private bool _isGridParsePreviewSelected;
     private GridConfiguration _gridConfiguration;
 
     private void OnNewImagesImported(List<ImportedImage> iImages)
@@ -83,5 +97,16 @@ internal class MainControl : IGameElement
     {
         _ribbon.SetPreviewFrames(iFrames);
         _flipbook.SetFrames(iFrames);
+        _gridParsePreview.SetImage(iFrames.FirstOrDefault()?.Texture);
+    }
+
+    private void OnSideBarSelectionChanged(bool iIsSelected)
+    {
+        _isSideBarSelected = iIsSelected;
+    }
+
+    private void OnGridParsePreviewSelectionChanged(bool iIsSelected)
+    {
+        _isGridParsePreviewSelected = iIsSelected;
     }
 }

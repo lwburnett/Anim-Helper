@@ -80,8 +80,19 @@ internal abstract class SelectableElementBase : MouseSensitiveElementBase
 
     protected bool IsSelected
     {
-        get; private set;
+        get => _isSelected;
+        private set
+        {
+            if (value == _isSelected) 
+                return;
+
+            _isSelected = value;
+            OnSelectionChanged(_isSelected);
+        }
     }
+    private bool _isSelected;
 
     protected abstract void vDraw();
+
+    protected virtual void OnSelectionChanged(bool iIsSelected) { }
 }

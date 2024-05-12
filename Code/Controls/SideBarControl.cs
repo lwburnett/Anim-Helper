@@ -6,11 +6,12 @@ using Utils;
 
 namespace Anim_Helper.Controls;
 
-internal class SideBarControl : IGameElement
+internal class SideBarControl : SelectableElementBase
 {
-    public SideBarControl(Action<GridConfiguration> iOnNewGridConfiguration)
+    public SideBarControl(Action<GridConfiguration> iOnNewGridConfiguration, Action<bool> iOnSelectionChanged)
     {
         _onNewGridConfiguration = iOnNewGridConfiguration;
+        _onSelectionChanged = iOnSelectionChanged;
 
         var spacingInterval = new Vector2(0, Settings.Layout.SideBar.VerticalSpacing);
 
@@ -78,9 +79,15 @@ internal class SideBarControl : IGameElement
         _spacingY = 0;
         _spacingYLabel = new LabelControl(spacingYTopLeft, "Spacing Y", Settings.Layout.SideBar.FontScaling);
         _spacingYTextBox = new NumericTextBox(spacingYRect, false, OnSpacingYChanged, Settings.Layout.SideBar.FontScaling);
+
+        var hitBoxTopLeft = cellWidthTopLeft;
+        var hitBoxSize = new Vector2(
+            Settings.Layout.SideBar.TextBoxTopLeft.X + Settings.Layout.SideBar.TextBoxSize.X - Settings.Layout.SideBar.LabelTopLeft.X,
+            spacingYRect.Bottom);
+        HitBox = new Rectangle(hitBoxTopLeft.ToPoint(), hitBoxSize.ToPoint());
     }
 
-    public void Update(GameTime iGameTime)
+    public override void Update(GameTime iGameTime)
     {
         _cellWidthLabel.Update(iGameTime);
         _cellWidthTextBox.Update(iGameTime);
@@ -105,9 +112,11 @@ internal class SideBarControl : IGameElement
 
         _spacingYLabel.Update(iGameTime);
         _spacingYTextBox.Update(iGameTime);
+
+        base.Update(iGameTime);
     }
 
-    public void Draw()
+    protected override void vDraw()
     {
         _cellWidthLabel.Draw();
         _cellWidthTextBox.Draw();
@@ -134,7 +143,15 @@ internal class SideBarControl : IGameElement
         _spacingYTextBox.Draw();
     }
 
+    protected override void OnSelectionChanged(bool iIsSelected)
+    {
+        _onSelectionChanged(iIsSelected);
+
+        base.OnSelectionChanged(iIsSelected);
+    }
+
     private readonly Action<GridConfiguration> _onNewGridConfiguration;
+    private readonly Action<bool> _onSelectionChanged;
 
     private int _cellWidth;
     private readonly IGameElement _cellWidthLabel;
